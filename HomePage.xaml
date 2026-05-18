@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveTuneNew.HomePage"
+             x:Name="ThisHomePage"
+             Title="Home">
+
+    <Grid RowDefinitions="100, *, 100">
+        <Grid Grid.Row="0"
+              BackgroundColor="#FF1E1E1E"
+              ColumnDefinitions="Auto, *, Auto"
+              Padding="10,5"
+              ColumnSpacing="10">
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 20" HeightRequest="40" WidthRequest="40">
+                <Image Source="icon.png" Aspect="AspectFill"/>
+            </Border>
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 15" BackgroundColor="#FF252526" Padding="15,0" HeightRequest="40">
+                <Entry Placeholder="Поиск" PlaceholderColor="Gray" TextColor="White" VerticalOptions="Center" />
+            </Border>
+            <Border Grid.Column="2" StrokeShape="RoundRectangle 20" HeightRequest="40" WidthRequest="40" BackgroundColor="#333333">
+                <Label Text="W" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="10" Padding="0,0,0,20">
+
+                <Grid BackgroundColor="#FF2D2D30" HeightRequest="250" Padding="10">
+                    <Border BackgroundColor="#FF252526" StrokeShape="RoundRectangle 10">
+                        <CollectionView ItemsSource="{Binding Albums}" Margin="10">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border StrokeShape="RoundRectangle 5" StrokeThickness="0" WidthRequest="200">
+                                        <ImageButton Source="{Binding PictureUrl}" 
+                                             Aspect="AspectFill"
+                                             Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
+                                             CommandParameter="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+                </Grid>
+
+                <Grid BackgroundColor="#FF2D2D30" HeightRequest="250" Padding="10">
+                    <Border BackgroundColor="#FF252526" StrokeShape="RoundRectangle 10">
+                        <Grid ColumnDefinitions="*, *, *, *" Padding="10" ColumnSpacing="10">
+                            <Border Grid.Column="0" BackgroundColor="#333333" Opacity="0.5" />
+                            <Border Grid.Column="1" BackgroundColor="#333333" Opacity="0.5" />
+                            <Border Grid.Column="2" BackgroundColor="#333333" Opacity="0.5" />
+                            <Border Grid.Column="3" BackgroundColor="#333333" Opacity="0.5" />
+                        </Grid>
+                    </Border>
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="2" BackgroundColor="#FF1E1E1E" />
+    </Grid>
+</ContentPage>

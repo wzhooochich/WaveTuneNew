@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37012.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaveTuneNew", "WaveTuneNew.csproj", "{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBAB3FE-428E-46B5-AED4-A6E613DFA243}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA7F4D03-2DC7-4036-ACC7-4390BFF8CB81}
+	EndGlobalSection
+EndGlobal

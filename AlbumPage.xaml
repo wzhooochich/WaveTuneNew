@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="WaveTuneNew.AlbumPage"
+    x:Name="AlbumPageRoot"
+    BackgroundColor="#121212">
+
+    <Grid 
+        RowDefinitions="60, *, 100">
+
+        <Border 
+            Grid.Row="0" 
+            BackgroundColor="#181818" 
+            StrokeThickness="0">
+            <Grid 
+                ColumnDefinitions="*,*,*" 
+                Padding="20, 0">
+                <ImageButton 
+                    Grid.Column="0" 
+                    Source="back.png" 
+                    HeightRequest="20" 
+                    HorizontalOptions="Start" 
+                    BackgroundColor="Transparent" 
+                    Command="{Binding GoBackCommand}" />
+                <Label 
+                    Grid.Column="1" 
+                    Text="ALBUM" 
+                    TextColor="White" 
+                    FontSize="12" 
+                    FontAttributes="Bold" 
+                    HorizontalOptions="Center" 
+                    VerticalOptions="Center" 
+                    CharacterSpacing="2"/>
+                <ImageButton 
+                    Grid.Column="2" 
+                    Source="bell.png" 
+                    HeightRequest="20" 
+                    HorizontalOptions="End" 
+                    BackgroundColor="Transparent"/>
+            </Grid>
+        </Border>
+
+        <Grid 
+            Grid.Row="1" 
+            RowDefinitions="Auto, Auto, *">
+
+            <VerticalStackLayout 
+                Grid.Row="0" 
+                Margin="0,20" 
+                Spacing="15" 
+                HorizontalOptions="Center">
+                <Border 
+                    StrokeShape="RoundRectangle 15" 
+                    HeightRequest="220" 
+                    WidthRequest="220" 
+                    StrokeThickness="0">
+                    <Border.Shadow>
+                        <Shadow 
+                            Brush="Black" 
+                            Offset="0,10" 
+                            Radius="20" 
+                            Opacity="0.5" />
+                    </Border.Shadow>
+                    <Image 
+                        Source="{Binding CurrentAlbum.PictureUrl}" 
+                        Aspect="AspectFill" />
+                </Border>
+
+                <VerticalStackLayout 
+                    Spacing="5" 
+                    HorizontalOptions="Center">
+                    <Label 
+                        Text="{Binding CurrentAlbum.Title}" 
+                        TextColor="White" 
+                        FontSize="24" 
+                        FontAttributes="Bold" 
+                        HorizontalTextAlignment="Center" />
+                    <Label 
+                        Text="{Binding CurrentAlbum.Author}" 
+                        TextColor="#B3B3B3" 
+                        FontSize="18" 
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <Grid 
+                Grid.Row="1" 
+                ColumnDefinitions="*,*,*" 
+                Padding="20,8" 
+                BackgroundColor="#181818">
+                <ImageButton 
+                    Grid.Column="0" 
+                    Source="music.png" 
+                    HeightRequest="18" 
+                    Opacity="0.7" />
+                <ImageButton 
+                    Grid.Column="1" 
+                    Source="eye.png" 
+                    HeightRequest="18" 
+                    Opacity="0.7" />
+                <ImageButton 
+                    Grid.Column="2" 
+                    Source="clock.png" 
+                    HeightRequest="18" 
+                    Opacity="0.7" />
+            </Grid>
+
+            <CollectionView 
+                Grid.Row="2" 
+                ItemsSource="{Binding Items}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid 
+                            Padding="20,10" 
+                            ColumnDefinitions="Auto, *, Auto" 
+                            ColumnSpacing="15">
+                            <Border 
+                                Grid.Column="0" 
+                                StrokeShape="RoundRectangle 6" 
+                                StrokeThickness="0">
+                                <Image 
+                                    Source="{Binding PictureUrl}" 
+                                    WidthRequest="45" 
+                                    HeightRequest="45" 
+                                    Aspect="AspectFill" />
+                            </Border>
+                            <VerticalStackLayout 
+                                Grid.Column="1" 
+                                VerticalOptions="Center">
+                                <Label 
+                                    Text="{Binding Title}" 
+                                    TextColor="White" 
+                                    FontSize="15" 
+                                    FontAttributes="Bold" />
+                                <Label 
+                                    Text="{Binding Author}" 
+                                    TextColor="#888888" 
+                                    FontSize="12" />
+                            </VerticalStackLayout>
+                            <Label 
+                                Grid.Column="2" 
+                                Text="::" 
+                                TextColor="#444444" 
+                                VerticalOptions="Center" 
+                                FontSize="18" />
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding BindingContext.SelectSongCommand, Source={x:Reference AlbumPageRoot}}" 
+                                    CommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <Border 
+            Grid.Row="2" 
+            BackgroundColor="#1E1E1E" 
+            StrokeThickness="0"
+            VerticalOptions="Fill">
+            <Grid 
+                Padding="15,0" 
+                ColumnDefinitions="1.2*, 2*, 1.2*" 
+                ColumnSpacing="5">
+
+                <HorizontalStackLayout 
+                    Grid.Column="0" 
+                    Spacing="12" 
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start">
+                    <Border 
+                        StrokeShape="RoundRectangle 8" 
+                        StrokeThickness="0" 
+                        HeightRequest="65" 
+                        WidthRequest="65">
+                        <Image 
+                            Source="{Binding CurrentSong.PictureUrl}" 
+                            Aspect="AspectFill" />
+                    </Border>
+                    <VerticalStackLayout 
+                        VerticalOptions="Center" 
+                        Spacing="2">
+                        <Label 
+                            Text="{Binding CurrentSong.Title}" 
+                            TextColor="White" 
+                            FontAttributes="Bold" 
+                            FontSize="14" 
+                            MaxLines="1" />
+                        <Label 
+                            Text="{Binding CurrentSong.Author}" 
+                            TextColor="#888888" 
+                            FontSize="12" 
+                            MaxLines="1" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout 
+                    Grid.Column="1" 
+                    VerticalOptions="End" 
+                    Margin="0,0,0,15">
+                    <ProgressBar 
+                        Progress="{Binding PlayProgress}" 
+                        ProgressColor="#51ADED" 
+                        BackgroundColor="#333333"
+                        HeightRequest="70" 
+                        ScaleY="1.5" 
+                        VerticalOptions="Center" />
+                </VerticalStackLayout>
+
+                <Grid 
+                    Grid.Column="2" 
+                    ColumnDefinitions="Auto, Auto" 
+                    ColumnSpacing="15"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center">
+
+                    <HorizontalStackLayout 
+                        Grid.Column="0" 
+                        Spacing="5" 
+                        VerticalOptions="Center">
+                        <Image 
+                            Source="volume_high.png" 
+                            HeightRequest="14" 
+                            Opacity="0.5"/>
+                        <Slider 
+                            Value="{Binding Volume}" 
+                            WidthRequest="70" 
+                            MinimumTrackColor="#51ADED" 
+                            Scale="0.8"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout 
+                        Grid.Column="1" 
+                        Spacing="12" 
+                        VerticalOptions="Center">
+                        <ImageButton 
+                            Source="previousmus.png" 
+                            Command="{Binding PlayPreviousCommand}" 
+                            HeightRequest="22" 
+                            WidthRequest="22" />
+
+                        <Border 
+                            StrokeShape="RoundRectangle 21" 
+                            HeightRequest="42" 
+                            WidthRequest="42" 
+                            BackgroundColor="White"
+                            StrokeThickness="0">
+                            <ImageButton 
+                                Command="{Binding TogglePlayCommand}" 
+                                HeightRequest="18" 
+                                WidthRequest="18"
+                                Aspect="AspectFit"
+                                HorizontalOptions="Center" 
+                                VerticalOptions="Center"
+                                BackgroundColor="Transparent"
+                                Padding="0">
+                                <ImageButton.Triggers>
+                                    <DataTrigger 
+                                        TargetType="ImageButton" 
+                                        Binding="{Binding IsPlaying}" 
+                                        Value="True">
+                                        <Setter Property="Source" Value="stop.png" />
+                                    </DataTrigger>
+                                    <DataTrigger 
+                                        TargetType="ImageButton" 
+                                        Binding="{Binding IsPlaying}" 
+                                        Value="False">
+                                        <Setter Property="Source" Value="play.png" />
+                                    </DataTrigger>
+                                </ImageButton.Triggers>
+                            </ImageButton>
+                        </Border>
+
+                        <ImageButton 
+                            Source="nextmus.png" 
+                            Command="{Binding PlayNextCommand}" 
+                            HeightRequest="22" 
+                            WidthRequest="22" />
+                    </HorizontalStackLayout>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
