@@ -28,4 +28,9 @@
         ContentTemplate="{DataTemplate local:RegisterPage}"
         Route="RegisterPage" />
 
+    <ShellContent
+        Title="ProfilePage"
+        ContentTemplate="{DataTemplate local:ProfilePage}"
+        Route="ProfilePage" />
+
 </Shell>

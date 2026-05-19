@@ -7,7 +7,12 @@ namespace WaveTuneNew
         public HomePage()
         {
             InitializeComponent();
-            BindingContext = new ViewModels.HomeViewModel();
+            BindingContext = new HomeViewModel();
+        }
+
+        private async void OnProfileTapped(object sender, TappedEventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
         }
     }
 }
