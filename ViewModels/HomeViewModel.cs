@@ -11,6 +11,9 @@ namespace WaveTuneNew.ViewModels
         public ObservableCollection<Album> Albums { get; } = new();
         private readonly DataBase _db = new DataBase();
 
+        [ObservableProperty]
+        private string connectionErrorMessage = string.Empty;
+
         public HomeViewModel()
         {
             _ = LoadAlbumsAsync();
@@ -18,21 +21,37 @@ namespace WaveTuneNew.ViewModels
 
         private async Task LoadAlbumsAsync()
         {
+            ConnectionErrorMessage = string.Empty;
             Albums.Clear();
+
             const string query = "SELECT id, title, author, picture_url FROM albums";
-            using var connection = _db.getConnection();
-            await connection.OpenAsync();
-            using var command = new MySqlCommand(query, connection);
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+
+            try
             {
-                Albums.Add(new Album
+                using var connection = _db.getConnection();
+                await connection.OpenAsync();
+                using var command = new MySqlCommand(query, connection);
+                using var reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
                 {
-                    Id = reader.GetInt32("id"),
-                    Title = reader.GetString("title"),
-                    Author = reader.GetString("author"),
-                    PictureUrl = reader["picture_url"] as string ?? string.Empty
-                });
+                    Albums.Add(new Album
+                    {
+                        Id = reader.GetInt32("id"),
+                        Title = reader.GetString("title"),
+                        Author = reader.GetString("author"),
+                        PictureUrl = reader["picture_url"] as string ?? string.Empty
+                    });
+                }
+            }
+            catch (MySqlException)
+            {
+                ConnectionErrorMessage = "Failed to connect to the database. Please try again.";
+                await Task.Delay(2000);
+                await LoadAlbumsAsync();
+            }
+            catch (Exception)
+            {
+                ConnectionErrorMessage = "An unexpected error occurred.";
             }
         }
 
@@ -41,7 +60,6 @@ namespace WaveTuneNew.ViewModels
         {
             if (album == null) return;
             var navigation = Application.Current?.MainPage?.Navigation;
-
             if (navigation != null)
             {
                 await navigation.PushAsync(new AlbumPage(album.Id));

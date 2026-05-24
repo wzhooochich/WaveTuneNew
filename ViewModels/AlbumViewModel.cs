@@ -103,7 +103,7 @@ namespace WaveTuneNew.ViewModels
                         Author = songsReader.GetString("author"),
                         PictureUrl = (songsReader["picture_url"] as string ?? "damage.png").Replace("\\", "/"),
                         FilePath = songsReader.GetString("file_path").Replace("\\", "/"),
-                        Genre = songsReader["genre"] as string ?? string.Empty,
+                        Genre = Song.ParseGenre(songsReader["genre"] as string),
                         AlbumId = _albumId
                     });
                 }
