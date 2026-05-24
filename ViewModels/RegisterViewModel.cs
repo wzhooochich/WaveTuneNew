@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MySqlConnector;
+using System.Text.RegularExpressions;
 using WaveTuneNew.Models;
 using WaveTuneNew.Services;
 
@@ -25,6 +26,18 @@ namespace WaveTuneNew.ViewModels
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
             {
                 ErrorMessage = "Enter login and password";
+                return;
+            }
+
+            if (!Regex.IsMatch(Login, @"^[a-zA-Z0-9]{3,20}$"))
+            {
+                ErrorMessage = "Login must be 3–20 characters, letters and digits only";
+                return;
+            }
+
+            if (Password.Length < 6)
+            {
+                ErrorMessage = "Password must be at least 6 characters";
                 return;
             }
 
