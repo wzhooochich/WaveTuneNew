@@ -31,4 +31,12 @@
         Title="ProfilePage"
         ContentTemplate="{DataTemplate local:ProfilePage}"
         Route="ProfilePage" />
+    <ShellContent
+        Title="AboutPage"
+        ContentTemplate="{DataTemplate local:AboutPage}"
+        Route="AboutPage" />
+    <ShellContent
+        Title="GenrePage"
+        ContentTemplate="{DataTemplate local:GenrePage}"
+        Route="GenrePage" />
 </Shell>

@@ -5,7 +5,8 @@
         Unknown,
         Trap,
         Hyperpop,
-        NewJazz
+        NewJazz,
+        CloudRap
     }
 
     public class Song
@@ -32,6 +33,7 @@
             "trap" => Genre.Trap,
             "hyperpop" => Genre.Hyperpop,
             "new jazz" => Genre.NewJazz,
+            "cloud rap" => Genre.CloudRap,
             _ => Genre.Unknown
         };
     }

@@ -10,12 +10,22 @@
               ColumnDefinitions="Auto, *, Auto"
               Padding="10,5"
               ColumnSpacing="10">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle 20" HeightRequest="40" WidthRequest="40"
+            <Border Grid.Column="0"
+                    StrokeShape="RoundRectangle 20"
+                    HeightRequest="40"
+                    WidthRequest="40"
                     ToolTipProperties.Text="WaveTune">
                 <Image Source="icon.png" Aspect="AspectFill"/>
             </Border>
-            <Border Grid.Column="1" StrokeShape="RoundRectangle 15" BackgroundColor="#FF252526" Padding="15,0" HeightRequest="40">
-                <Entry Placeholder="Поиск" PlaceholderColor="Gray" TextColor="White" VerticalOptions="Center" />
+            <Border Grid.Column="1"
+                    StrokeShape="RoundRectangle 15"
+                    BackgroundColor="#FF252526"
+                    Padding="15,0"
+                    HeightRequest="40">
+                <Entry Placeholder="Поиск"
+                       PlaceholderColor="Gray"
+                       TextColor="White"
+                       VerticalOptions="Center" />
             </Border>
             <Border Grid.Column="2"
                     StrokeShape="Ellipse"
@@ -40,8 +50,18 @@
                 </Grid>
             </Border>
         </Grid>
+
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="10" Padding="0,0,0,20">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,20">
+
+                <Grid BackgroundColor="#FF252526" Padding="20,14">
+                    <Label Text="АЛЬБОМЫ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+                </Grid>
+
                 <Grid BackgroundColor="#FF2D2D30" HeightRequest="250" Padding="10">
                     <Border BackgroundColor="#FF252526" StrokeShape="RoundRectangle 10">
                         <CollectionView ItemsSource="{Binding Albums}" Margin="10">
@@ -50,7 +70,9 @@
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border StrokeShape="RoundRectangle 5" StrokeThickness="0" WidthRequest="200">
+                                    <Border StrokeShape="RoundRectangle 5"
+                                            StrokeThickness="0"
+                                            WidthRequest="200">
                                         <ImageButton Source="{Binding PictureUrl}"
                                                      Aspect="AspectFill"
                                                      Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
@@ -62,25 +84,64 @@
                         </CollectionView>
                     </Border>
                 </Grid>
+
+                <Grid BackgroundColor="#FF252526" Padding="20,14">
+                    <Label Text="ЖАНРЫ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+                </Grid>
+
                 <Grid BackgroundColor="#FF2D2D30" HeightRequest="250" Padding="10">
                     <Border BackgroundColor="#FF252526" StrokeShape="RoundRectangle 10">
-                        <Grid ColumnDefinitions="*, *, *, *" Padding="10" ColumnSpacing="10">
-                            <Border Grid.Column="0" BackgroundColor="#333333" Opacity="0.5" />
-                            <Border Grid.Column="1" BackgroundColor="#333333" Opacity="0.5" />
-                            <Border Grid.Column="2" BackgroundColor="#333333" Opacity="0.5" />
-                            <Border Grid.Column="3" BackgroundColor="#333333" Opacity="0.5" />
-                        </Grid>
+                        <CollectionView ItemsSource="{Binding Genres}" Margin="10">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            WidthRequest="200"
+                                            HeightRequest="220">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding BindingContext.GoToGenreCommand, Source={x:Reference ThisHomePage}}"
+                                                CommandParameter="{Binding}" />
+                                        </Border.GestureRecognizers>
+                                        <Grid>
+                                            <Image Source="{Binding PictureUrl}"
+                                                   Aspect="AspectFill" />
+                                            <BoxView BackgroundColor="#80000000" />
+                                            <Label Text="{Binding Name}"
+                                                   TextColor="White"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="End"
+                                                   Margin="0,0,0,12" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </Border>
                 </Grid>
+
                 <Button Text="О приложении"
                         BackgroundColor="Transparent"
-                        TextColor="#888888"
-                        FontSize="13"
+                        TextColor="#666666"
+                        FontSize="11"
                         HorizontalOptions="Center"
+                        Margin="0,10,0,0"
+                        Padding="10,5"
                         Clicked="OnAboutClicked"
                         ToolTipProperties.Text="Информация о приложении" />
+
             </VerticalStackLayout>
         </ScrollView>
+
         <Grid Grid.Row="2" BackgroundColor="#FF1E1E1E" />
     </Grid>
 </ContentPage>

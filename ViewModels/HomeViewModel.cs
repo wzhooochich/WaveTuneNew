@@ -10,6 +10,7 @@ namespace WaveTuneNew.ViewModels
     public partial class HomeViewModel : ObservableObject
     {
         public ObservableCollection<Album> Albums { get; } = new();
+        public ObservableCollection<GenreItem> Genres { get; } = new();
 
         [ObservableProperty]
         private string connectionErrorMessage = string.Empty;
@@ -30,6 +31,46 @@ namespace WaveTuneNew.ViewModels
         {
             _ = LoadAlbumsAsync();
             _ = LoadAvatarAsync();
+            _ = LoadGenresAsync();
+        }
+
+        private async Task LoadGenresAsync()
+        {
+            var genreList = new[]
+            {
+                new { Name = "Trap", Genre = Genre.Trap, DbValue = "trap", Color = "#1a1a2e" },
+                new { Name = "Hyperpop", Genre = Genre.Hyperpop, DbValue = "hyperpop", Color = "#16213e" },
+                new { Name = "New Jazz", Genre = Genre.NewJazz, DbValue = "new jazz", Color = "#0f3460" },
+                new { Name = "Cloud Rap", Genre = Genre.CloudRap, DbValue = "cloud rap", Color = "#2d1b4e" }
+            };
+
+            try
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+
+                foreach (var g in genreList)
+                {
+                    const string query = "SELECT picture_url FROM songs WHERE genre = @genre ORDER BY RAND() LIMIT 1";
+                    using var cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@genre", g.DbValue);
+                    var result = await cmd.ExecuteScalarAsync();
+                    var pic = (result as string ?? string.Empty).Replace("\\", "/");
+
+                    Genres.Add(new GenreItem
+                    {
+                        Name = g.Name,
+                        Genre = g.Genre,
+                        Color = g.Color,
+                        PictureUrl = pic
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
 
         public async Task LoadAvatarAsync()
@@ -90,9 +131,25 @@ namespace WaveTuneNew.ViewModels
             if (album == null) return;
             var navigation = Application.Current?.MainPage?.Navigation;
             if (navigation != null)
-            {
                 await navigation.PushAsync(new AlbumPage(album.Id));
-            }
         }
+
+        [RelayCommand]
+        private async Task GoToGenre(GenreItem genre)
+        {
+            if (genre == null) return;
+            var navigation = Application.Current?.MainPage?.Navigation;
+            if (navigation != null)
+                await navigation.PushAsync(new GenrePage(genre));
+        }
+    }
+
+    public class GenreItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public Genre Genre { get; set; }
+        public string Color { get; set; } = "#333333";
+        public string PictureUrl { get; set; } = string.Empty;
+        public bool HasPicture => !string.IsNullOrWhiteSpace(PictureUrl);
     }
 }
