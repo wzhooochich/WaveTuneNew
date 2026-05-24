@@ -42,17 +42,39 @@
                                      Padding="24,30,24,24"
                                      Spacing="14">
 
-                    <Border StrokeShape="Ellipse"
-                            Stroke="#602191"
-                            StrokeThickness="3"
-                            HeightRequest="110"
-                            WidthRequest="110"
-                            HorizontalOptions="Center">
-                        <Image Source="{Binding AvatarUrl}"
-                               Aspect="AspectFill" />
-                    </Border>
+                    <Grid HorizontalOptions="Center"
+                          WidthRequest="116"
+                          HeightRequest="116">
 
-                    <Label Text="{Binding Nickname}"
+                        <Border StrokeShape="Ellipse"
+                                Stroke="#602191"
+                                StrokeThickness="3"
+                                HeightRequest="116"
+                                WidthRequest="116">
+                            <Image Source="{Binding AvatarUrl}"
+                                   Aspect="AspectFill" />
+                        </Border>
+
+                        <Border StrokeThickness="0"
+                                BackgroundColor="#602191"
+                                StrokeShape="Ellipse"
+                                HeightRequest="32"
+                                WidthRequest="32"
+                                HorizontalOptions="End"
+                                VerticalOptions="End">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickAvatarCommand}" />
+                            </Border.GestureRecognizers>
+                            <Label Text="✎"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                    </Grid>
+
+                    <Label Text="{Binding DisplayName}"
                            TextColor="White"
                            FontSize="22"
                            FontAttributes="Bold"

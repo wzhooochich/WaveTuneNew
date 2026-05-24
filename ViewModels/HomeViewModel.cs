@@ -3,20 +3,48 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using MySqlConnector;
 using WaveTuneNew.Models;
+using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
     public partial class HomeViewModel : ObservableObject
     {
         public ObservableCollection<Album> Albums { get; } = new();
-        private readonly DataBase _db = new DataBase();
 
         [ObservableProperty]
         private string connectionErrorMessage = string.Empty;
 
+        [ObservableProperty]
+        private string avatarUrl = string.Empty;
+
+        public bool HasAvatar => !string.IsNullOrWhiteSpace(AvatarUrl);
+        public bool HasNoAvatar => string.IsNullOrWhiteSpace(AvatarUrl);
+
+        partial void OnAvatarUrlChanged(string value)
+        {
+            OnPropertyChanged(nameof(HasAvatar));
+            OnPropertyChanged(nameof(HasNoAvatar));
+        }
+
         public HomeViewModel()
         {
             _ = LoadAlbumsAsync();
+            _ = LoadAvatarAsync();
+        }
+
+        public async Task LoadAvatarAsync()
+        {
+            var user = SessionService.CurrentUser;
+            if (user == null) return;
+
+            const string query = "SELECT avatar_url FROM user_profiles WHERE user_id = @userId";
+            var db = new DataBase();
+            using var connection = db.getConnection();
+            await connection.OpenAsync();
+            using var cmd = new MySqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            var result = await cmd.ExecuteScalarAsync();
+            AvatarUrl = result as string ?? string.Empty;
         }
 
         private async Task LoadAlbumsAsync()
@@ -28,7 +56,8 @@ namespace WaveTuneNew.ViewModels
 
             try
             {
-                using var connection = _db.getConnection();
+                var db = new DataBase();
+                using var connection = db.getConnection();
                 await connection.OpenAsync();
                 using var command = new MySqlCommand(query, connection);
                 using var reader = await command.ExecuteReaderAsync();

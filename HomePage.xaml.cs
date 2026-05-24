@@ -10,6 +10,13 @@ namespace WaveTuneNew
             BindingContext = new HomeViewModel();
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is HomeViewModel vm)
+                await vm.LoadAvatarAsync();
+        }
+
         private async void OnProfileTapped(object sender, TappedEventArgs e)
         {
             await Navigation.PushAsync(new ProfilePage());

@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MySqlConnector;
-using System.Threading.Tasks;
+using WaveTuneNew.Models;
+using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
@@ -28,34 +29,38 @@ namespace WaveTuneNew.ViewModels
             }
 
             var db = new DataBase();
-            const string query = "SELECT password FROM users WHERE login = @login";
+            const string query = "SELECT id, password FROM users WHERE login = @login";
 
-            using (var connection = db.getConnection())
-            using (var command = new MySqlCommand(query, connection))
+            using var connection = db.getConnection();
+            await connection.OpenAsync();
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@login", Login);
+
+            using var reader = await command.ExecuteReaderAsync();
+
+            if (!await reader.ReadAsync())
             {
-                command.Parameters.AddWithValue("@login", Login);
-
-                db.openConnection();
-                var result = await command.ExecuteScalarAsync();
-                db.closeConnection();
-
-                if (result is null)
-                {
-                    ErrorMessage = "uncorrect login or password";
-                    return;
-                }
-
-                var passwordFromDb = result.ToString() ?? string.Empty;
-
-                if (passwordFromDb == Password)
-                {
-                    await Shell.Current.GoToAsync("//HomePage");
-                }
-                else
-                {
-                    ErrorMessage = "Неверный логин или пароль";
-                }
+                ErrorMessage = "Неверный логин или пароль";
+                return;
             }
+
+            var passwordFromDb = reader["password"].ToString() ?? string.Empty;
+            var userId = reader.GetInt32("id");
+
+            if (passwordFromDb != Password)
+            {
+                ErrorMessage = "Неверный логин или пароль";
+                return;
+            }
+
+            SessionService.CurrentUser = new User
+            {
+                Id = userId,
+                Login = Login
+            };
+
+            await Shell.Current.GoToAsync("//HomePage");
         }
 
         [RelayCommand]
