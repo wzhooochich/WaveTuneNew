@@ -21,5 +21,10 @@ namespace WaveTuneNew
         {
             await Navigation.PushAsync(new ProfilePage());
         }
+
+        private async void OnAboutClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AboutPage());
+        }
     }
 }

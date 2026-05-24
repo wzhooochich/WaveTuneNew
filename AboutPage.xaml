@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveTuneNew.AboutPage"
+             BackgroundColor="#FF1E1E1E">
+
+    <Grid RowDefinitions="60, *">
+
+        <Grid Grid.Row="0"
+              BackgroundColor="#FF1E1E1E"
+              ColumnDefinitions="Auto, *"
+              Padding="10,8"
+              ColumnSpacing="10">
+
+            <Button Grid.Column="0"
+                    Text="←"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    FontSize="20"
+                    Clicked="OnBackClicked"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    ToolTipProperties.Text="Назад" />
+
+            <Label Grid.Column="1"
+                   Text="О приложении"
+                   TextColor="White"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="0">
+
+                <VerticalStackLayout BackgroundColor="#FF2D2D30"
+                                     Padding="24,40,24,40"
+                                     Spacing="16"
+                                     HorizontalOptions="Fill">
+
+                    <Border StrokeShape="RoundRectangle 20"
+                            StrokeThickness="0"
+                            HeightRequest="120"
+                            WidthRequest="120"
+                            HorizontalOptions="Center"
+                            BackgroundColor="#602191">
+                        <Image Source="preloadericon.png"
+                               Aspect="AspectFit"
+                               Margin="15" />
+                    </Border>
+
+                    <Label Text="WaveTune"
+                           TextColor="White"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+
+                    <Label Text="Версия 1.0"
+                           TextColor="#888888"
+                           FontSize="14"
+                           HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#3D3D3D" />
+
+                <VerticalStackLayout BackgroundColor="#FF2D2D30"
+                                     Padding="24,20"
+                                     Spacing="10">
+
+                    <Label Text="О ПРИЛОЖЕНИИ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+
+                    <Label TextColor="#CCCCCC"
+                           FontSize="14"
+                           LineBreakMode="WordWrap">
+                        <Label.Text>WaveTune — музыкальный плеер для прослушивания треков и альбомов. Приложение позволяет просматривать каталог музыки, воспроизводить треки, управлять профилем пользователя и настраивать персональные данные.</Label.Text>
+                    </Label>
+
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#3D3D3D" />
+
+                <VerticalStackLayout BackgroundColor="#FF2D2D30"
+                                     Padding="24,20"
+                                     Spacing="16">
+
+                    <Label Text="РАЗРАБОТЧИК"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+
+                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="16">
+                        <Border Grid.Column="0"
+                                StrokeShape="Ellipse"
+                                Stroke="#602191"
+                                StrokeThickness="2"
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                BackgroundColor="#333333">
+                            <Label Text="З"
+                                   TextColor="White"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                            <Label Text="Зуй Никита"
+                                   TextColor="White"
+                                   FontSize="16"
+                                   FontAttributes="Bold" />
+                            <Label Text="Группа 82ТП"
+                                   TextColor="#888888"
+                                   FontSize="13" />
+                            <Label Text="МГК Цифровых Технологий"
+                                   TextColor="#888888"
+                                   FontSize="13" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#3D3D3D" />
+
+                <VerticalStackLayout BackgroundColor="#FF2D2D30"
+                                     Padding="24,20"
+                                     Spacing="10">
+
+                    <Label Text="ТЕХНОЛОГИИ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+
+                    <Label Text=".NET 9 · .NET MAUI · MySQL · CommunityToolkit.Mvvm"
+                           TextColor="#CCCCCC"
+                           FontSize="14" />
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

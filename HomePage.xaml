@@ -10,20 +10,21 @@
               ColumnDefinitions="Auto, *, Auto"
               Padding="10,5"
               ColumnSpacing="10">
-            <Border Grid.Column="0" StrokeShape="RoundRectangle 20" HeightRequest="40" WidthRequest="40">
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 20" HeightRequest="40" WidthRequest="40"
+                    ToolTipProperties.Text="WaveTune">
                 <Image Source="icon.png" Aspect="AspectFill"/>
             </Border>
             <Border Grid.Column="1" StrokeShape="RoundRectangle 15" BackgroundColor="#FF252526" Padding="15,0" HeightRequest="40">
                 <Entry Placeholder="Поиск" PlaceholderColor="Gray" TextColor="White" VerticalOptions="Center" />
             </Border>
-
             <Border Grid.Column="2"
                     StrokeShape="Ellipse"
                     HeightRequest="40"
                     WidthRequest="40"
                     BackgroundColor="#333333"
                     Stroke="#602191"
-                    StrokeThickness="2">
+                    StrokeThickness="2"
+                    ToolTipProperties.Text="Профиль">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnProfileTapped" />
                 </Border.GestureRecognizers>
@@ -38,7 +39,6 @@
                            IsVisible="{Binding HasAvatar}" />
                 </Grid>
             </Border>
-
         </Grid>
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="10" Padding="0,0,0,20">
@@ -54,7 +54,8 @@
                                         <ImageButton Source="{Binding PictureUrl}"
                                                      Aspect="AspectFill"
                                                      Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
-                                                     CommandParameter="{Binding}" />
+                                                     CommandParameter="{Binding}"
+                                                     ToolTipProperties.Text="Открыть альбом" />
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
@@ -71,6 +72,13 @@
                         </Grid>
                     </Border>
                 </Grid>
+                <Button Text="О приложении"
+                        BackgroundColor="Transparent"
+                        TextColor="#888888"
+                        FontSize="13"
+                        HorizontalOptions="Center"
+                        Clicked="OnAboutClicked"
+                        ToolTipProperties.Text="Информация о приложении" />
             </VerticalStackLayout>
         </ScrollView>
         <Grid Grid.Row="2" BackgroundColor="#FF1E1E1E" />
