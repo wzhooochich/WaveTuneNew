@@ -7,30 +7,28 @@
     Shell.NavBarIsVisible="False"
     Shell.FlyoutBehavior="Disabled"
     Title="WaveTune">
-
+    <ShellContent
+        Title="SplashPage"
+        ContentTemplate="{DataTemplate local:SplashPage}"
+        Route="SplashPage" />
     <ShellContent
         Title="MainPage"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
     <ShellContent
         Title="HomePage"
         ContentTemplate="{DataTemplate local:HomePage}"
         Route="HomePage" />
-
     <ShellContent
         Title="AlbumPage"
         ContentTemplate="{DataTemplate local:AlbumPage}"
         Route="AlbumPage" />
-
     <ShellContent
         Title="RegisterPage"
         ContentTemplate="{DataTemplate local:RegisterPage}"
         Route="RegisterPage" />
-
     <ShellContent
         Title="ProfilePage"
         ContentTemplate="{DataTemplate local:ProfilePage}"
         Route="ProfilePage" />
-
 </Shell>

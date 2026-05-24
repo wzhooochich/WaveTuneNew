@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveTuneNew.SplashPage"
+             BackgroundColor="#602191">
+
+    <Grid RowDefinitions="*, 100">
+
+        <Grid Grid.Row="0">
+            <Image Source="preloadericon.png"
+                   HeightRequest="500"
+                   WidthRequest="500"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+
+            <Label Text="WaveTune"
+                   TextColor="White"
+                   FontSize="48"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   CharacterSpacing="4"
+                   Margin="0,150,0,0"/>
+        </Grid>
+
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="True"
+                           Color="White"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+
+    </Grid>
+
+</ContentPage>
