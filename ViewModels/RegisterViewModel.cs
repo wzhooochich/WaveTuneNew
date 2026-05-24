@@ -19,6 +19,21 @@ namespace WaveTuneNew.ViewModels
         private string errorMessage = string.Empty;
 
         [RelayCommand]
+        private void FocusPassword(object parameter)
+        {
+            if (parameter is Entry entry)
+                entry.Focus();
+        }
+
+        [RelayCommand]
+        private void ClearForm()
+        {
+            Login = string.Empty;
+            Password = string.Empty;
+            ErrorMessage = string.Empty;
+        }
+
+        [RelayCommand]
         private async Task RegisterAsync()
         {
             ErrorMessage = string.Empty;

@@ -4,49 +4,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WaveTuneNew.ViewModels"
              Title="Register">
-
     <ContentPage.BindingContext>
         <vm:RegisterViewModel />
     </ContentPage.BindingContext>
-
     <Grid RowDefinitions="150, *, 150">
         <Grid Grid.Row="1">
             <Grid ColumnDefinitions="20*, 60*, 20*">
                 <Border Grid.Column="1" StrokeShape="RoundRectangle 15">
                     <Grid ColumnDefinitions="50*, 50*">
-
                         <Grid Grid.Column="0">
                             <BoxView BackgroundColor="#602191" />
-
                             <Image Source="wtic.png"
                                    Aspect="AspectFit"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Center"
                                    Margin="20" />
                         </Grid>
-
                         <VerticalStackLayout Grid.Column="1">
                             <Label Text="Sign up"
                                    FontSize="24"
                                    HorizontalOptions="Center"
                                    Margin="0,20"
                                    FontAttributes="Bold" />
-
-                            <Entry Placeholder="Login"
+                            <Entry x:Name="LoginEntry"
+                                   Placeholder="Login"
                                    Margin="20,15"
-                                   Text="{Binding Login}" />
-
-                            <Entry Placeholder="Password"
+                                   Text="{Binding Login}"
+                                   ReturnType="Next"
+                                   ReturnCommand="{Binding FocusPasswordCommand}"
+                                   ReturnCommandParameter="{x:Reference PasswordEntry}" />
+                            <Entry x:Name="PasswordEntry"
+                                   Placeholder="Password"
                                    Margin="20,15"
                                    IsPassword="True"
-                                   Text="{Binding Password}" />
-
+                                   Text="{Binding Password}"
+                                   ReturnType="Go"
+                                   ReturnCommand="{Binding RegisterCommand}" />
                             <Button Text="Continue"
                                     BackgroundColor="#602191"
                                     Margin="20,15"
                                     TextColor="#ffffff"
                                     Command="{Binding RegisterCommand}" />
-
                             <Label Text="{Binding ErrorMessage}"
                                    TextColor="Red"
                                    HorizontalOptions="Center" />
@@ -56,5 +54,4 @@
             </Grid>
         </Grid>
     </Grid>
-
 </ContentPage>
