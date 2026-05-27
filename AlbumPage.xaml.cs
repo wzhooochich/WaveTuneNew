@@ -1,4 +1,4 @@
-using Plugin.Maui.Audio;
+using WaveTuneNew.Services;
 using WaveTuneNew.ViewModels;
 
 namespace WaveTuneNew
@@ -8,14 +8,8 @@ namespace WaveTuneNew
         public AlbumPage(int albumId)
         {
             InitializeComponent();
-
-            var audioManager = AudioManager.Current;
-            BindingContext = new ViewModels.AlbumViewModel(albumId, audioManager);
-        }
-
-        private async void OnBackClicked(object sender, EventArgs e)
-        {
-            await Navigation.PopAsync();
+            var player = IPlatformApplication.Current!.Services.GetService<PlayerService>()!;
+            BindingContext = new AlbumViewModel(albumId, player);
         }
     }
 }

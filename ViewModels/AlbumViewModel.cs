@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using MySqlConnector;
-using Plugin.Maui.Audio;
 using WaveTuneNew.Models;
+using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
@@ -11,9 +11,7 @@ namespace WaveTuneNew.ViewModels
     {
         private readonly DataBase _db = new DataBase();
         private readonly int _albumId;
-        private readonly IAudioManager _audioManager;
-        private IAudioPlayer? _player;
-        private readonly IDispatcherTimer _timer;
+        private readonly PlayerService _player;
 
         [ObservableProperty]
         private ObservableCollection<Song> _items = new();
@@ -21,53 +19,19 @@ namespace WaveTuneNew.ViewModels
         [ObservableProperty]
         private Album _currentAlbum = new();
 
-        [ObservableProperty]
-        private Song? currentSong;
-
-        [ObservableProperty]
-        private double playProgress;
-
-        [ObservableProperty]
-        private double volume = 0.5;
-
-        private bool _isPlaying;
-        public bool IsPlaying
-        {
-            get => _isPlaying;
-            set => SetProperty(ref _isPlaying, value);
-        }
-
-        public AlbumViewModel(int albumId, IAudioManager audioManager)
+        public AlbumViewModel(int albumId, PlayerService player)
         {
             _albumId = albumId;
-            _audioManager = audioManager;
-
-            _timer = Application.Current!.Dispatcher.CreateTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
-            _timer.Tick += (s, e) =>
-            {
-                if (_player is { IsPlaying: true } && _player.Duration > 0)
-                {
-                    PlayProgress = _player.CurrentPosition / _player.Duration;
-                }
-            };
-
+            _player = player;
             _ = LoadAlbumDataAsync();
-        }
-
-        partial void OnVolumeChanged(double value)
-        {
-            if (_player != null)
-            {
-                _player.Volume = value;
-            }
         }
 
         private async Task LoadAlbumDataAsync()
         {
             try
             {
-                using var connection = _db.getConnection();
+                var db = new DataBase();
+                using var connection = db.getConnection();
                 await connection.OpenAsync();
 
                 const string albumQuery = "SELECT title, author, picture_url FROM albums WHERE id = @id";
@@ -118,103 +82,15 @@ namespace WaveTuneNew.ViewModels
         [RelayCommand]
         private void SelectSong(Song song)
         {
-            CurrentSong = song;
-        }
-
-        [RelayCommand]
-        private void TogglePlay()
-        {
-            if (_player == null) return;
-
-            if (_player.IsPlaying)
-            {
-                _player.Pause();
-                IsPlaying = false;
-            }
-            else
-            {
-                _player.Play();
-                IsPlaying = true;
-            }
+            var index = Items.IndexOf(song);
+            _player.SetQueue(Items, index);
         }
 
         [RelayCommand]
         public async Task GoBack()
         {
             if (Application.Current?.MainPage?.Navigation != null)
-            {
                 await Application.Current.MainPage.Navigation.PopAsync();
-            }
-        }
-
-        [RelayCommand]
-        public void PlayNext()
-        {
-            if (CurrentSong == null || Items.Count == 0) return;
-
-            int currentIndex = Items.IndexOf(CurrentSong);
-            int nextIndex = (currentIndex + 1) >= Items.Count ? 0 : currentIndex + 1;
-
-            CurrentSong = Items[nextIndex];
-        }
-
-        [RelayCommand]
-        public void PlayPrevious()
-        {
-            if (CurrentSong == null || Items.Count == 0) return;
-
-            int currentIndex = Items.IndexOf(CurrentSong);
-            int prevIndex = (currentIndex - 1) < 0 ? Items.Count - 1 : currentIndex - 1;
-
-            CurrentSong = Items[prevIndex];
-        }
-
-        partial void OnCurrentSongChanged(Song? value)
-        {
-            if (value is null) return;
-
-            try
-            {
-                if (!File.Exists(value.FilePath))
-                {
-                    System.Diagnostics.Debug.WriteLine($"!!! ФАЙЛ НЕ НАЙДЕН по пути: {value.FilePath}");
-                    IsPlaying = false;
-                    return;
-                }
-
-                if (_player != null)
-                {
-                    _player.PlaybackEnded -= OnPlaybackEnded;
-                    _player.Stop();
-                    _player.Dispose();
-                }
-
-                var stream = File.OpenRead(value.FilePath);
-                _player = _audioManager.CreatePlayer(stream);
-
-                _player.Volume = Volume;
-                _player.PlaybackEnded += OnPlaybackEnded;
-
-                PlayProgress = 0;
-                _player.Play();
-                IsPlaying = true;
-                _timer.Start();
-
-                System.Diagnostics.Debug.WriteLine($">>> Сейчас играет: {value.Title}");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"!!! ОШИБКА ПЛЕЕРА: {ex.Message}");
-                IsPlaying = false;
-            }
-        }
-
-        private void OnPlaybackEnded(object? sender, EventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                PlayNext();
-            });
         }
     }
 }

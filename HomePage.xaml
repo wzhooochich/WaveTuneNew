@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:WaveTuneNew.Views"
              x:Class="WaveTuneNew.HomePage"
              x:Name="ThisHomePage"
              Title="Home">
-    <Grid RowDefinitions="100, *, 100">
+    <Grid RowDefinitions="100, *, Auto">
         <Grid Grid.Row="0"
               BackgroundColor="#FF1E1E1E"
               ColumnDefinitions="Auto, *, Auto"
@@ -111,8 +112,7 @@
                                                 CommandParameter="{Binding}" />
                                         </Border.GestureRecognizers>
                                         <Grid>
-                                            <Image Source="{Binding PictureUrl}"
-                                                   Aspect="AspectFill" />
+                                            <Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
                                             <BoxView BackgroundColor="#80000000" />
                                             <Label Text="{Binding Name}"
                                                    TextColor="White"
@@ -142,6 +142,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="2" BackgroundColor="#FF1E1E1E" />
+        <views:PlayerBarView Grid.Row="2" />
+
     </Grid>
 </ContentPage>

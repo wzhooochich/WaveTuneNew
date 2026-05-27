@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using MySqlConnector;
 using WaveTuneNew.Models;
+using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
@@ -14,11 +15,13 @@ namespace WaveTuneNew.ViewModels
         private string genreName = string.Empty;
 
         private readonly Genre _genre;
+        private readonly PlayerService _player;
 
-        public GenreViewModel(GenreItem genreItem)
+        public GenreViewModel(GenreItem genreItem, PlayerService player)
         {
             _genre = genreItem.Genre;
             GenreName = genreItem.Name;
+            _player = player;
             _ = LoadSongsAsync();
         }
 
@@ -47,6 +50,7 @@ namespace WaveTuneNew.ViewModels
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@genre", genreStr);
                 using var reader = await cmd.ExecuteReaderAsync();
+
                 while (await reader.ReadAsync())
                 {
                     Songs.Add(new Song
@@ -64,6 +68,13 @@ namespace WaveTuneNew.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
+        }
+
+        [RelayCommand]
+        private void SelectSong(Song song)
+        {
+            var index = Songs.IndexOf(song);
+            _player.SetQueue(Songs, index);
         }
 
         [RelayCommand]

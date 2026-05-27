@@ -1,3 +1,4 @@
+using WaveTuneNew.Services;
 using WaveTuneNew.ViewModels;
 
 namespace WaveTuneNew
@@ -7,7 +8,8 @@ namespace WaveTuneNew
         public GenrePage(GenreItem genre)
         {
             InitializeComponent();
-            BindingContext = new GenreViewModel(genre);
+            var player = IPlatformApplication.Current!.Services.GetService<PlayerService>()!;
+            BindingContext = new GenreViewModel(genre, player);
         }
     }
 }

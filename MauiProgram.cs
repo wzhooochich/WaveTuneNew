@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using Plugin.Maui.Audio;
 using WaveTuneNew.ViewModels;
+using WaveTuneNew.Services;
 using Microsoft.Maui.LifecycleEvents;
 
 namespace WaveTuneNew;
@@ -20,6 +21,7 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton<IAudioManager, AudioManager>();
+        builder.Services.AddSingleton<PlayerService>();
         builder.Services.AddTransient<LoginViewModel>();
 
 #if WINDOWS
