@@ -34,6 +34,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="SearchResultsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="TrackPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		
+		<MauiXaml Update="TrackPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="SearchResultsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+			
 		<MauiXaml Update="Views\PlayerBarView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

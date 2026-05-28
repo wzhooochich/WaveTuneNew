@@ -6,11 +6,13 @@
              x:Name="ThisHomePage"
              Title="Home">
     <Grid RowDefinitions="100, *, Auto">
+
         <Grid Grid.Row="0"
               BackgroundColor="#FF1E1E1E"
-              ColumnDefinitions="Auto, *, Auto"
+              ColumnDefinitions="Auto, *, Auto, Auto"
               Padding="10,5"
-              ColumnSpacing="10">
+              ColumnSpacing="8">
+
             <Border Grid.Column="0"
                     StrokeShape="RoundRectangle 20"
                     HeightRequest="40"
@@ -18,17 +20,94 @@
                     ToolTipProperties.Text="WaveTune">
                 <Image Source="icon.png" Aspect="AspectFill"/>
             </Border>
-            <Border Grid.Column="1"
-                    StrokeShape="RoundRectangle 15"
-                    BackgroundColor="#FF252526"
-                    Padding="15,0"
-                    HeightRequest="40">
-                <Entry Placeholder="Поиск"
-                       PlaceholderColor="Gray"
-                       TextColor="White"
-                       VerticalOptions="Center" />
-            </Border>
+
+            <Grid Grid.Column="1">
+                <Border StrokeShape="RoundRectangle 15"
+                        BackgroundColor="#FF252526"
+                        Padding="15,0"
+                        HeightRequest="40">
+                    <Entry x:Name="SearchEntry"
+                           Placeholder="Поиск треков, альбомов, авторов..."
+                           PlaceholderColor="Gray"
+                           TextColor="White"
+                           VerticalOptions="Center"
+                           Text="{Binding SearchText}"
+                           ReturnCommand="{Binding GoToSearchResultsCommand}" />
+                </Border>
+
+                <Border x:Name="SuggestionsPanel"
+                        BackgroundColor="#FF252526"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1"
+                        Stroke="#333333"
+                        IsVisible="{Binding ShowSuggestions}"
+                        VerticalOptions="Start"
+                        Margin="0,44,0,0"
+                        ZIndex="999">
+                    <CollectionView ItemsSource="{Binding Suggestions}"
+                                    x:Name="SuggestionsView">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="12,8"
+                                      ColumnDefinitions="Auto, *, Auto"
+                                      ColumnSpacing="10">
+                                    <Border Grid.Column="0"
+                                            StrokeShape="RoundRectangle 4"
+                                            StrokeThickness="0"
+                                            HeightRequest="36"
+                                            WidthRequest="36">
+                                        <Image Source="{Binding PictureUrl}"
+                                               Aspect="AspectFill" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center"
+                                                         Spacing="2">
+                                        <Label Text="{Binding Name}"
+                                               TextColor="White"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding Author}"
+                                               TextColor="#888888"
+                                               FontSize="11"
+                                               MaxLines="1" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="{Binding TypeColor}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="6,3"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding TypeLabel}"
+                                               TextColor="White"
+                                               FontSize="10" />
+                                    </Border>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.SelectSuggestionCommand, Source={x:Reference ThisHomePage}}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Border>
+            </Grid>
+
             <Border Grid.Column="2"
+                    StrokeShape="RoundRectangle 15"
+                    BackgroundColor="#602191"
+                    HeightRequest="40"
+                    WidthRequest="40">
+                <ImageButton BackgroundColor="Transparent"
+                             Source="search.png"
+                             HeightRequest="20"
+                             WidthRequest="20"
+                             Command="{Binding GoToSearchResultsCommand}"
+                             ToolTipProperties.Text="Найти" />
+            </Border>
+
+            <Border Grid.Column="3"
                     StrokeShape="Ellipse"
                     HeightRequest="40"
                     WidthRequest="40"

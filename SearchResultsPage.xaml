@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:WaveTuneNew.Views"
+             x:Class="WaveTuneNew.SearchResultsPage"
+             x:Name="SearchRoot"
+             BackgroundColor="#121212">
+
+    <Grid RowDefinitions="60, *, Auto">
+
+        <Border Grid.Row="0" BackgroundColor="#181818" StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto, *" Padding="20,0" ColumnSpacing="10">
+                <ImageButton Grid.Column="0"
+                             Source="back.png"
+                             HeightRequest="20"
+                             WidthRequest="20"
+                             BackgroundColor="Transparent"
+                             Command="{Binding GoBackCommand}"
+                             ToolTipProperties.Text="Назад" />
+                <Label Grid.Column="1"
+                       Text="{Binding SearchQuery, StringFormat='Результаты: {0}'}"
+                       TextColor="White"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="0">
+
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="#602191"
+                                   HorizontalOptions="Center"
+                                   Margin="0,20" />
+
+                <Label Text="Ничего не найдено"
+                       IsVisible="{Binding HasNoResults}"
+                       TextColor="#555555"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       Margin="0,40" />
+
+                <Grid BackgroundColor="#FF252526"
+                      Padding="20,14"
+                      IsVisible="{Binding Albums.Count, Converter={x:StaticResource CountToBoolConverter}}">
+                    <Label Text="АЛЬБОМЫ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding Albums}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="20,10"
+                                  ColumnDefinitions="Auto, *"
+                                  ColumnSpacing="15">
+                                <Border Grid.Column="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        StrokeThickness="0">
+                                    <Image Source="{Binding PictureUrl}"
+                                           WidthRequest="55"
+                                           HeightRequest="55"
+                                           Aspect="AspectFill" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding Title}"
+                                           TextColor="White"
+                                           FontSize="15"
+                                           FontAttributes="Bold" />
+                                    <Label Text="{Binding Author}"
+                                           TextColor="#888888"
+                                           FontSize="12" />
+                                </VerticalStackLayout>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference SearchRoot}}"
+                                        CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Grid BackgroundColor="#FF252526"
+                      Padding="20,14"
+                      IsVisible="{Binding Authors.Count, Converter={x:StaticResource CountToBoolConverter}}">
+                    <Label Text="АВТОРЫ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding Authors}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="20,12"
+                                  ColumnDefinitions="Auto, *"
+                                  ColumnSpacing="15">
+                                <Border Grid.Column="0"
+                                        StrokeShape="Ellipse"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#333333"
+                                        HeightRequest="45"
+                                        WidthRequest="45">
+                                    <Label Text="{Binding [0]}"
+                                           TextColor="White"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                <Label Grid.Column="1"
+                                       Text="{Binding .}"
+                                       TextColor="White"
+                                       FontSize="15"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Grid BackgroundColor="#FF252526"
+                      Padding="20,14"
+                      IsVisible="{Binding Songs.Count, Converter={x:StaticResource CountToBoolConverter}}">
+                    <Label Text="ТРЕКИ"
+                           TextColor="#888888"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           CharacterSpacing="2" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding Songs}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="20,10"
+                                  ColumnDefinitions="Auto, *"
+                                  ColumnSpacing="15">
+                                <Border Grid.Column="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        StrokeThickness="0">
+                                    <Image Source="{Binding PictureUrl}"
+                                           WidthRequest="50"
+                                           HeightRequest="50"
+                                           Aspect="AspectFill" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding Title}"
+                                           TextColor="White"
+                                           FontSize="15"
+                                           FontAttributes="Bold" />
+                                    <Label Text="{Binding Author}"
+                                           TextColor="#888888"
+                                           FontSize="12" />
+                                </VerticalStackLayout>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding BindingContext.GoToTrackCommand, Source={x:Reference SearchRoot}}"
+                                        CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <views:PlayerBarView Grid.Row="2" />
+
+    </Grid>
+</ContentPage>

@@ -9,14 +9,23 @@ namespace WaveTuneNew.ViewModels
 {
     public partial class HomeViewModel : ObservableObject
     {
+        private readonly List<Album> _allAlbums = new();
+
         public ObservableCollection<Album> Albums { get; } = new();
         public ObservableCollection<GenreItem> Genres { get; } = new();
+        public ObservableCollection<SearchSuggestion> Suggestions { get; } = new();
 
         [ObservableProperty]
         private string connectionErrorMessage = string.Empty;
 
         [ObservableProperty]
         private string avatarUrl = string.Empty;
+
+        [ObservableProperty]
+        private string searchText = string.Empty;
+
+        [ObservableProperty]
+        private bool showSuggestions = false;
 
         public bool HasAvatar => !string.IsNullOrWhiteSpace(AvatarUrl);
         public bool HasNoAvatar => string.IsNullOrWhiteSpace(AvatarUrl);
@@ -25,6 +34,59 @@ namespace WaveTuneNew.ViewModels
         {
             OnPropertyChanged(nameof(HasAvatar));
             OnPropertyChanged(nameof(HasNoAvatar));
+        }
+
+        partial void OnSearchTextChanged(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Suggestions.Clear();
+                ShowSuggestions = false;
+                return;
+            }
+            _ = LoadSuggestionsAsync(value);
+        }
+
+        private async Task LoadSuggestionsAsync(string query)
+        {
+            Suggestions.Clear();
+
+            try
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+
+                const string sql = @"
+                    (SELECT 'album' as type, id, title as name, author, picture_url FROM albums
+                     WHERE title LIKE @q OR author LIKE @q LIMIT 2)
+                    UNION ALL
+                    (SELECT 'track' as type, id, title as name, author, picture_url FROM songs
+                     WHERE title LIKE @q OR author LIKE @q LIMIT 2)
+                    LIMIT 4";
+
+                using var cmd = new MySqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@q", $"%{query}%");
+                using var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Suggestions.Add(new SearchSuggestion
+                    {
+                        Type = reader.GetString("type"),
+                        Id = reader.GetInt32("id"),
+                        Name = reader.GetString("name"),
+                        Author = reader.GetString("author"),
+                        PictureUrl = (reader["picture_url"] as string ?? string.Empty).Replace("\\", "/")
+                    });
+                }
+
+                ShowSuggestions = Suggestions.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
 
         public HomeViewModel()
@@ -91,6 +153,7 @@ namespace WaveTuneNew.ViewModels
         private async Task LoadAlbumsAsync()
         {
             ConnectionErrorMessage = string.Empty;
+            _allAlbums.Clear();
             Albums.Clear();
 
             const string query = "SELECT id, title, author, picture_url FROM albums";
@@ -104,7 +167,7 @@ namespace WaveTuneNew.ViewModels
                 using var reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    Albums.Add(new Album
+                    _allAlbums.Add(new Album
                     {
                         Id = reader.GetInt32("id"),
                         Title = reader.GetString("title"),
@@ -112,6 +175,7 @@ namespace WaveTuneNew.ViewModels
                         PictureUrl = reader["picture_url"] as string ?? string.Empty
                     });
                 }
+                foreach (var a in _allAlbums) Albums.Add(a);
             }
             catch (MySqlException)
             {
@@ -142,6 +206,66 @@ namespace WaveTuneNew.ViewModels
             if (navigation != null)
                 await navigation.PushAsync(new GenrePage(genre));
         }
+
+        [RelayCommand]
+        public async Task GoToSearchResults()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText)) return;
+            ShowSuggestions = false;
+            var navigation = Application.Current?.MainPage?.Navigation;
+            if (navigation != null)
+                await navigation.PushAsync(new SearchResultsPage(SearchText));
+        }
+
+        [RelayCommand]
+        public async Task SelectSuggestion(SearchSuggestion suggestion)
+        {
+            if (suggestion == null) return;
+            ShowSuggestions = false;
+            SearchText = string.Empty;
+
+            var navigation = Application.Current?.MainPage?.Navigation;
+            if (navigation == null) return;
+
+            if (suggestion.Type == "album")
+            {
+                await navigation.PushAsync(new AlbumPage(suggestion.Id));
+            }
+            else
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+                const string q = "SELECT id, title, author, picture_url, file_path, genre FROM songs WHERE id = @id";
+                using var cmd = new MySqlCommand(q, connection);
+                cmd.Parameters.AddWithValue("@id", suggestion.Id);
+                using var reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    var song = new Song
+                    {
+                        Id = reader.GetInt32("id"),
+                        Title = reader.GetString("title"),
+                        Author = reader.GetString("author"),
+                        PictureUrl = (reader["picture_url"] as string ?? string.Empty).Replace("\\", "/"),
+                        FilePath = (reader["file_path"] as string ?? string.Empty).Replace("\\", "/"),
+                        Genre = Song.ParseGenre(reader["genre"] as string)
+                    };
+                    await navigation.PushAsync(new TrackPage(song));
+                }
+            }
+        }
+    }
+
+    public class SearchSuggestion
+    {
+        public string Type { get; set; } = string.Empty;
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public string PictureUrl { get; set; } = string.Empty;
+        public string TypeLabel => Type == "album" ? "Альбом" : "Трек";
+        public string TypeColor => Type == "album" ? "#602191" : "#51ADED";
     }
 
     public class GenreItem

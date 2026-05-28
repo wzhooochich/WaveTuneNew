@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:WaveTuneNew.Views"
+             x:Class="WaveTuneNew.TrackPage"
+             BackgroundColor="#121212">
+
+    <Grid RowDefinitions="60, *, Auto">
+
+        <Border Grid.Row="0" BackgroundColor="#181818" StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto, *, Auto" Padding="20,0">
+                <ImageButton Grid.Column="0"
+                             Source="back.png"
+                             HeightRequest="20"
+                             WidthRequest="20"
+                             BackgroundColor="Transparent"
+                             Command="{Binding GoBackCommand}"
+                             ToolTipProperties.Text="Назад" />
+                <Label Grid.Column="1"
+                       Text="ТРЕК"
+                       TextColor="White"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       CharacterSpacing="2" />
+            </Grid>
+        </Border>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="0">
+
+                <Grid HeightRequest="300" BackgroundColor="#1a1a1a">
+                    <Image Source="{Binding Song.PictureUrl}"
+                           Aspect="AspectFill"
+                           Opacity="0.4" />
+                    <VerticalStackLayout HorizontalOptions="Start"
+                                         VerticalOptions="End"
+                                         Padding="20,0,20,20"
+                                         Spacing="8">
+                        <Border BackgroundColor="#333333"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="10,5"
+                                HorizontalOptions="Start">
+                            <Label Text="{Binding GenreDisplay}"
+                                   TextColor="White"
+                                   FontSize="12" />
+                        </Border>
+                        <Label Text="{Binding Song.Title}"
+                               TextColor="White"
+                               FontSize="26"
+                               FontAttributes="Bold"
+                               LineBreakMode="WordWrap" />
+                        <Label Text="{Binding Song.Author}"
+                               TextColor="#AAAAAA"
+                               FontSize="16" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid BackgroundColor="#181818" Padding="20,16">
+                    <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="15">
+                        <Border Grid.Column="0"
+                                StrokeShape="RoundRectangle 8"
+                                StrokeThickness="0"
+                                HeightRequest="50"
+                                WidthRequest="50">
+                            <Image Source="{Binding Song.PictureUrl}" Aspect="AspectFill" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="{Binding Song.Title}"
+                                   TextColor="White"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   MaxLines="1" />
+                            <Label Text="{Binding Song.Author}"
+                                   TextColor="#888888"
+                                   FontSize="12"
+                                   MaxLines="1" />
+                        </VerticalStackLayout>
+                        <Border Grid.Column="2"
+                                StrokeShape="RoundRectangle 25"
+                                HeightRequest="50"
+                                WidthRequest="50"
+                                BackgroundColor="White"
+                                StrokeThickness="0">
+                            <ImageButton Command="{Binding PlayThisCommand}"
+                                         HeightRequest="20"
+                                         WidthRequest="20"
+                                         Aspect="AspectFit"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         BackgroundColor="Transparent"
+                                         Padding="0"
+                                         ToolTipProperties.Text="Играть / Пауза">
+                                <ImageButton.Triggers>
+                                    <DataTrigger TargetType="ImageButton"
+                                                 Binding="{Binding IsPlaying}"
+                                                 Value="True">
+                                        <Setter Property="Source" Value="stop.png" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="ImageButton"
+                                                 Binding="{Binding IsPlaying}"
+                                                 Value="False">
+                                        <Setter Property="Source" Value="play.png" />
+                                    </DataTrigger>
+                                </ImageButton.Triggers>
+                            </ImageButton>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <GraphicsView x:Name="WaveCanvas"
+                              HeightRequest="60"
+                              HorizontalOptions="Fill"
+                              BackgroundColor="#121212"
+                              Margin="0" />
+
+                <ProgressBar Margin="20,8"
+                             Progress="{Binding PlayProgress}"
+                             ProgressColor="#602191"
+                             BackgroundColor="#333333" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <views:PlayerBarView Grid.Row="2" />
+
+    </Grid>
+</ContentPage>
