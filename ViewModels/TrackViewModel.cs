@@ -12,8 +12,8 @@ namespace WaveTuneNew.ViewModels
         [ObservableProperty]
         private Song song;
 
-        public double PlayProgress => _player.PlayProgress;
-        public bool IsPlaying => _player.IsPlaying;
+        public bool IsThisTrackPlaying => _player.CurrentSong?.Id == Song.Id && _player.IsPlaying;
+        public double PlayProgress => IsThisTrackPlaying ? _player.PlayProgress : 0;
 
         public TrackViewModel(Song song, PlayerService player)
         {
@@ -22,24 +22,25 @@ namespace WaveTuneNew.ViewModels
 
             _player.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == nameof(PlayerService.PlayProgress))
+                if (e.PropertyName == nameof(PlayerService.PlayProgress) ||
+                    e.PropertyName == nameof(PlayerService.IsPlaying) ||
+                    e.PropertyName == nameof(PlayerService.CurrentSong))
+                {
+                    OnPropertyChanged(nameof(IsThisTrackPlaying));
                     OnPropertyChanged(nameof(PlayProgress));
-                if (e.PropertyName == nameof(PlayerService.IsPlaying))
-                    OnPropertyChanged(nameof(IsPlaying));
+                }
             };
         }
+
+        public bool ShouldAnimateWave => IsThisTrackPlaying;
 
         [RelayCommand]
         private void PlayThis()
         {
             if (_player.CurrentSong?.Id == Song.Id)
-            {
                 _player.TogglePlayCommand.Execute(null);
-            }
             else
-            {
                 _player.SetQueue(new List<Song> { Song }, 0);
-            }
         }
 
         [RelayCommand]

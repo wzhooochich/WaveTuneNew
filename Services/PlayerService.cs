@@ -2,7 +2,6 @@ using Plugin.Maui.Audio;
 using WaveTuneNew.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
 
 namespace WaveTuneNew.Services
 {
@@ -26,6 +25,9 @@ namespace WaveTuneNew.Services
 
         [ObservableProperty]
         private bool hasCurrentSong;
+
+        [ObservableProperty]
+        private bool isVolumeVisible = false;
 
         private List<Song> _queue = new();
         private int _currentIndex = -1;
@@ -98,7 +100,6 @@ namespace WaveTuneNew.Services
         public void TogglePlay()
         {
             if (_player == null) return;
-
             if (_player.IsPlaying)
             {
                 _player.Pause();
@@ -126,6 +127,12 @@ namespace WaveTuneNew.Services
             _currentIndex = (_currentIndex - 1) < 0 ? _queue.Count - 1 : _currentIndex - 1;
             PlayCurrent();
         }
+
+        [RelayCommand]
+        public void ShowVolume() => IsVolumeVisible = true;
+
+        [RelayCommand]
+        public void HideVolume() => IsVolumeVisible = false;
 
         partial void OnVolumeChanged(double value)
         {

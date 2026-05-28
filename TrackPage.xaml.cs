@@ -9,12 +9,14 @@ namespace WaveTuneNew
     {
         private readonly WaveDrawable _waveDrawable = new();
         private IDispatcherTimer? _waveTimer;
+        private TrackViewModel? _vm;
 
         public TrackPage(Song song)
         {
             InitializeComponent();
             var player = IPlatformApplication.Current!.Services.GetService<PlayerService>()!;
-            BindingContext = new TrackViewModel(song, player);
+            _vm = new TrackViewModel(song, player);
+            BindingContext = _vm;
         }
 
         protected override void OnAppearing()
@@ -27,8 +29,11 @@ namespace WaveTuneNew
             _waveTimer.Interval = TimeSpan.FromMilliseconds(50);
             _waveTimer.Tick += (s, e) =>
             {
-                _waveDrawable.Advance(0.08f);
-                WaveCanvas.Invalidate();
+                if (_vm?.IsThisTrackPlaying == true)
+                {
+                    _waveDrawable.Advance(0.08f);
+                    WaveCanvas.Invalidate();
+                }
             };
             _waveTimer.Start();
         }

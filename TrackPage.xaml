@@ -78,8 +78,9 @@
                                    FontSize="12"
                                    MaxLines="1" />
                         </VerticalStackLayout>
+
                         <Border Grid.Column="2"
-                                StrokeShape="RoundRectangle 25"
+                                StrokeShape="Ellipse"
                                 HeightRequest="50"
                                 WidthRequest="50"
                                 BackgroundColor="White"
@@ -95,12 +96,12 @@
                                          ToolTipProperties.Text="Играть / Пауза">
                                 <ImageButton.Triggers>
                                     <DataTrigger TargetType="ImageButton"
-                                                 Binding="{Binding IsPlaying}"
+                                                 Binding="{Binding IsThisTrackPlaying}"
                                                  Value="True">
                                         <Setter Property="Source" Value="stop.png" />
                                     </DataTrigger>
                                     <DataTrigger TargetType="ImageButton"
-                                                 Binding="{Binding IsPlaying}"
+                                                 Binding="{Binding IsThisTrackPlaying}"
                                                  Value="False">
                                         <Setter Property="Source" Value="play.png" />
                                     </DataTrigger>
@@ -113,8 +114,7 @@
                 <GraphicsView x:Name="WaveCanvas"
                               HeightRequest="60"
                               HorizontalOptions="Fill"
-                              BackgroundColor="#121212"
-                              Margin="0" />
+                              BackgroundColor="#121212" />
 
                 <ProgressBar Margin="20,8"
                              Progress="{Binding PlayProgress}"
