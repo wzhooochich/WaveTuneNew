@@ -6,39 +6,41 @@
              x:Name="ThisHomePage"
              BackgroundColor="#121212"
              Title="Home">
-    <Grid RowDefinitions="64, *, Auto">
+	<Grid RowDefinitions="64, *, Auto">
 
-        <Grid Grid.Row="0"
+		<Grid Grid.Row="0"
               BackgroundColor="#121212"
               ColumnDefinitions="Auto, *, Auto, Auto"
               Padding="20,0"
               ColumnSpacing="12">
 
-            <Border>
-                <Image Grid.Column="0"
-                   Source="icon.png"
-                   HeightRequest="32"
-                   WidthRequest="32"
-                   VerticalOptions="Center"
-                   ToolTipProperties.Text="WaveTune"
-                   Aspect="AspectFit"
-                       />
-            </Border>
+			<Border Grid.Column="0"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="0"
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    BackgroundColor="#602191"
+                    VerticalOptions="Center"
+                    ToolTipProperties.Text="WaveTune">
+				<Image Source="icon.png"
+                       Aspect="AspectFit"
+                       Margin="6" />
+			</Border>
 
-            <Grid Grid.Column="1">
-                <Border StrokeShape="RoundRectangle 20"
+			<Grid Grid.Column="1">
+				<Border StrokeShape="RoundRectangle 20"
                         BackgroundColor="#2A2A2A"
                         Padding="16,0"
                         HeightRequest="40"
                         StrokeThickness="0">
-                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="8">
-                        <Image Grid.Column="0"
+					<Grid ColumnDefinitions="Auto, *" ColumnSpacing="8">
+						<Image Grid.Column="0"
                                Source="search.png"
                                HeightRequest="16"
                                WidthRequest="16"
                                Opacity="0.5"
                                VerticalOptions="Center" />
-                        <Entry Grid.Column="1"
+						<Entry Grid.Column="1"
                                x:Name="SearchEntry"
                                Placeholder="Что хочешь включить?"
                                PlaceholderColor="#666666"
@@ -46,10 +48,10 @@
                                VerticalOptions="Center"
                                Text="{Binding SearchText}"
                                ReturnCommand="{Binding GoToSearchResultsCommand}" />
-                    </Grid>
-                </Border>
+					</Grid>
+				</Border>
 
-                <Border x:Name="SuggestionsPanel"
+				<Border x:Name="SuggestionsPanel"
                         BackgroundColor="#282828"
                         StrokeShape="RoundRectangle 8"
                         StrokeThickness="0"
@@ -57,53 +59,53 @@
                         VerticalOptions="Start"
                         Margin="0,44,0,0"
                         ZIndex="999">
-                    <CollectionView ItemsSource="{Binding Suggestions}" x:Name="SuggestionsView">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Padding="12,10"
+					<CollectionView ItemsSource="{Binding Suggestions}" x:Name="SuggestionsView">
+						<CollectionView.ItemTemplate>
+							<DataTemplate>
+								<Grid Padding="12,10"
                                       ColumnDefinitions="Auto, *, Auto"
                                       ColumnSpacing="12">
-                                    <Border Grid.Column="0"
+									<Border Grid.Column="0"
                                             StrokeShape="RoundRectangle 4"
                                             StrokeThickness="0"
                                             HeightRequest="40"
                                             WidthRequest="40">
-                                        <Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
-                                    </Border>
-                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="{Binding Name}"
+										<Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
+									</Border>
+									<VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+										<Label Text="{Binding Name}"
                                                TextColor="White"
                                                FontSize="13"
                                                FontAttributes="Bold"
                                                MaxLines="1" />
-                                        <Label Text="{Binding Author}"
+										<Label Text="{Binding Author}"
                                                TextColor="#B3B3B3"
                                                FontSize="11"
                                                MaxLines="1" />
-                                    </VerticalStackLayout>
-                                    <Border Grid.Column="2"
+									</VerticalStackLayout>
+									<Border Grid.Column="2"
                                             BackgroundColor="{Binding TypeColor}"
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 4"
                                             Padding="8,4"
                                             VerticalOptions="Center">
-                                        <Label Text="{Binding TypeLabel}"
+										<Label Text="{Binding TypeLabel}"
                                                TextColor="White"
                                                FontSize="10" />
-                                    </Border>
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer
+									</Border>
+									<Grid.GestureRecognizers>
+										<TapGestureRecognizer
                                             Command="{Binding BindingContext.SelectSuggestionCommand, Source={x:Reference ThisHomePage}}"
                                             CommandParameter="{Binding}" />
-                                    </Grid.GestureRecognizers>
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </Border>
-            </Grid>
+									</Grid.GestureRecognizers>
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+				</Border>
+			</Grid>
 
-            <ImageButton Grid.Column="2"
+			<ImageButton Grid.Column="2"
                          BackgroundColor="Transparent"
                          Source="search.png"
                          HeightRequest="20"
@@ -112,121 +114,187 @@
                          ToolTipProperties.Text="Найти"
                          IsVisible="False" />
 
-            <Border Grid.Column="3"
+			<Border Grid.Column="3"
                     StrokeShape="Ellipse"
                     HeightRequest="40"
                     WidthRequest="40"
                     BackgroundColor="#282828"
                     StrokeThickness="0"
                     ToolTipProperties.Text="Профиль">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnProfileTapped" />
-                </Border.GestureRecognizers>
-                <Grid>
-                    <Label Text="W"
+				<Border.GestureRecognizers>
+					<TapGestureRecognizer Tapped="OnProfileTapped" />
+				</Border.GestureRecognizers>
+				<Grid>
+					<Label Text="W"
                            TextColor="White"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            IsVisible="{Binding HasNoAvatar}" />
-                    <Image Source="{Binding AvatarUrl}"
+					<Image Source="{Binding AvatarUrl}"
                            Aspect="AspectFill"
                            IsVisible="{Binding HasAvatar}" />
-                </Grid>
-            </Border>
-        </Grid>
+				</Grid>
+			</Border>
+		</Grid>
 
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="0" Padding="20,16,20,24">
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Spacing="0" Padding="20,16,20,24">
 
-                <Label Text="Альбомы"
-                       TextColor="White"
-                       FontSize="22"
-                       FontAttributes="Bold"
-                       Margin="0,0,0,16" />
+				<!-- Альбомы -->
+				<Grid ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,16">
+					<Label Grid.Column="0"
+                           Text="Альбомы"
+                           TextColor="White"
+                           FontSize="22"
+                           FontAttributes="Bold" />
+					<Button Grid.Column="1"
+                            Text="‹"
+                            TextColor="White"
+                            BackgroundColor="#282828"
+                            FontSize="18"
+                            HeightRequest="32"
+                            WidthRequest="32"
+                            Padding="0"
+                            CornerRadius="16"
+                            Clicked="OnAlbumsScrollLeft"
+                            ToolTipProperties.Text="Назад" />
+					<Button Grid.Column="2"
+                            Text="›"
+                            TextColor="White"
+                            BackgroundColor="#282828"
+                            FontSize="18"
+                            HeightRequest="32"
+                            WidthRequest="32"
+                            Padding="0"
+                            CornerRadius="16"
+                            Margin="8,0,0,0"
+                            Clicked="OnAlbumsScrollRight"
+                            ToolTipProperties.Text="Вперёд" />
+				</Grid>
 
-                <CollectionView ItemsSource="{Binding Albums}" HeightRequest="200">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="16" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout Spacing="8" WidthRequest="150">
-                                <Border StrokeShape="RoundRectangle 8"
-                                        StrokeThickness="0"
-                                        HeightRequest="150"
-                                        WidthRequest="150">
-                                    <ImageButton Source="{Binding PictureUrl}"
-                                                 Aspect="AspectFill"
-                                                 Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
-                                                 CommandParameter="{Binding}"
-                                                 ToolTipProperties.Text="Открыть альбом"
-                                                 BackgroundColor="Transparent" />
-                                </Border>
-                                <Label Text="{Binding Title}"
-                                       TextColor="White"
-                                       FontSize="13"
-                                       FontAttributes="Bold"
-                                       MaxLines="1" />
-                                <Label Text="{Binding Author}"
-                                       TextColor="#B3B3B3"
-                                       FontSize="12"
-                                       MaxLines="1"
-                                       Margin="0,-6,0,0" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+				<ScrollView x:Name="AlbumsScroll"
+                            Orientation="Horizontal"
+                            HeightRequest="200"
+                            HorizontalScrollBarVisibility="Never">
+					<HorizontalStackLayout Spacing="16" x:Name="AlbumsList">
+						<CollectionView ItemsSource="{Binding Albums}">
+							<CollectionView.ItemsLayout>
+								<LinearItemsLayout Orientation="Horizontal" ItemSpacing="16" />
+							</CollectionView.ItemsLayout>
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<VerticalStackLayout Spacing="8" WidthRequest="150">
+										<Border StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                HeightRequest="150"
+                                                WidthRequest="150">
+											<ImageButton Source="{Binding PictureUrl}"
+                                                         Aspect="AspectFill"
+                                                         Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
+                                                         CommandParameter="{Binding}"
+                                                         ToolTipProperties.Text="Открыть альбом"
+                                                         BackgroundColor="Transparent" />
+										</Border>
+										<Label Text="{Binding Title}"
+                                               TextColor="White"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               MaxLines="1" />
+										<Label Text="{Binding Author}"
+                                               TextColor="#B3B3B3"
+                                               FontSize="12"
+                                               MaxLines="1"
+                                               Margin="0,-6,0,0" />
+									</VerticalStackLayout>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</HorizontalStackLayout>
+				</ScrollView>
 
-                <Label Text="Жанры"
-                       TextColor="White"
-                       FontSize="22"
-                       FontAttributes="Bold"
-                       Margin="0,28,0,16" />
+				<!-- Жанры -->
+				<Grid ColumnDefinitions="*, Auto, Auto" Margin="0,28,0,16">
+					<Label Grid.Column="0"
+                           Text="Жанры"
+                           TextColor="White"
+                           FontSize="22"
+                           FontAttributes="Bold" />
+					<Button Grid.Column="1"
+                            Text="‹"
+                            TextColor="White"
+                            BackgroundColor="#282828"
+                            FontSize="18"
+                            HeightRequest="32"
+                            WidthRequest="32"
+                            Padding="0"
+                            CornerRadius="16"
+                            Clicked="OnGenresScrollLeft"
+                            ToolTipProperties.Text="Назад" />
+					<Button Grid.Column="2"
+                            Text="›"
+                            TextColor="White"
+                            BackgroundColor="#282828"
+                            FontSize="18"
+                            HeightRequest="32"
+                            WidthRequest="32"
+                            Padding="0"
+                            CornerRadius="16"
+                            Margin="8,0,0,0"
+                            Clicked="OnGenresScrollRight"
+                            ToolTipProperties.Text="Вперёд" />
+				</Grid>
 
-                <CollectionView ItemsSource="{Binding Genres}" HeightRequest="140">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border StrokeShape="RoundRectangle 8"
-                                    StrokeThickness="0"
-                                    WidthRequest="200"
-                                    HeightRequest="130">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding BindingContext.GoToGenreCommand, Source={x:Reference ThisHomePage}}"
-                                        CommandParameter="{Binding}" />
-                                </Border.GestureRecognizers>
-                                <Grid>
-                                    <Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
-                                    <BoxView BackgroundColor="#99000000" />
-                                    <Label Text="{Binding Name}"
-                                           TextColor="White"
-                                           FontSize="17"
-                                           FontAttributes="Bold"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+				<ScrollView x:Name="GenresScroll"
+                            Orientation="Horizontal"
+                            HeightRequest="140"
+                            HorizontalScrollBarVisibility="Never">
+					<HorizontalStackLayout Spacing="12">
+						<CollectionView ItemsSource="{Binding Genres}">
+							<CollectionView.ItemsLayout>
+								<LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+							</CollectionView.ItemsLayout>
+							<CollectionView.ItemTemplate>
+								<DataTemplate>
+									<Border StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            WidthRequest="200"
+                                            HeightRequest="130">
+										<Border.GestureRecognizers>
+											<TapGestureRecognizer
+                                                Command="{Binding BindingContext.GoToGenreCommand, Source={x:Reference ThisHomePage}}"
+                                                CommandParameter="{Binding}" />
+										</Border.GestureRecognizers>
+										<Grid>
+											<Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
+											<BoxView BackgroundColor="#99000000" />
+											<Label Text="{Binding Name}"
+                                                   TextColor="White"
+                                                   FontSize="17"
+                                                   FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</HorizontalStackLayout>
+				</ScrollView>
 
-                <Label Text="О приложении"
+				<Label Text="О приложении"
                        TextColor="#535353"
                        FontSize="11"
                        HorizontalOptions="Center"
                        Margin="0,24,0,0">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnAboutClicked" />
-                    </Label.GestureRecognizers>
-                </Label>
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Tapped="OnAboutClicked" />
+					</Label.GestureRecognizers>
+				</Label>
 
-            </VerticalStackLayout>
-        </ScrollView>
+			</VerticalStackLayout>
+		</ScrollView>
 
-        <views:PlayerBarView Grid.Row="2" />
+		<views:PlayerBarView Grid.Row="2" />
 
-    </Grid>
+	</Grid>
 </ContentPage>

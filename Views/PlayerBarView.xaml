@@ -56,8 +56,8 @@
                             BackgroundColor="White"
                             StrokeThickness="0">
                         <ImageButton Command="{Binding TogglePlayCommand}"
-                                     HeightRequest="18"
-                                     WidthRequest="18"
+                                     HeightRequest="24"
+                                     WidthRequest="24"
                                      Aspect="AspectFit"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
