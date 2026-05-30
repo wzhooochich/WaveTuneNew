@@ -130,6 +130,25 @@
 	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Ran To Atlanta\Ran_To_Atlanta.mp3" />
 	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Whisper My Name\iceman.png" />
 	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Whisper My Name\Whisper_My_Name.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\7 Minutes In Heaven (Atavan Halen)\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Champagne For My Real Friends, Real Pain For My Sham Friends\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Dance, Dance\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\I Slept With Someone\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\I've Got A Dark Alley\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Nobody Puts Baby In The Corner.mp3\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Of All The Gin Joints In All The World\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Our Lawyer\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Sophomore Slump Or Comeback Of The Year\From Under The Cork Tree.png" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Sophomore Slump Or Comeback Of The Year\Sophomore Slump Or Comeback Of The Year.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Our Lawyer\Our Lawyer Made Us Change The Name Of This Song So We Wouldn't Get Sued.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Of All The Gin Joints In All The World\Of All The Gin Joints In All The World.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Nobody Puts Baby In The Corner.mp3\Nobody Puts Baby In The Corner.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\I%27ve Got A Dark Alley\I've Got A Dark Alley And A Bad Idea That Says You Should Shut Your Mouth (Summer Song).mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\I Slept With Someone In Fall Out Boy And All I Got Was This Stupid Song Written About Me\I Slept With Someone In Fall Out Boy And All I Got Was This Stupid Song Written About Me.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Dance, Dance\Dance, Dance.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\Champagne For My Real Friends, Real Pain For My Sham Friends\Champagne For My Real Friends, Real Pain For My Sham Friends.mp3" />
+	  <MauiAsset Remove="Data\albums\Fall Out Boy - From Under The Cork Tree\songs\7 Minutes In Heaven %28Atavan Halen%29\7 Minutes In Heaven (Atavan Halen).mp3" />
 	</ItemGroup>
 
 </Project>
