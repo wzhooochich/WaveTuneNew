@@ -114,4 +114,22 @@
 		<Content Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiAsset Remove="Data\albums\21 Savage - american dream\american dream.png" />
+	  <MauiAsset Remove="Data\albums\21 Savage - american dream\songs\all of me\all_of_me.mp3" />
+	  <MauiAsset Remove="Data\albums\21 Savage - american dream\songs\redrum\american dream.png" />
+	  <MauiAsset Remove="Data\albums\21 Savage - american dream\songs\redrum\redrum.mp3" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Dust\Dust.mp3" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Dust\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Janice STFU\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Janice STFU\Janice_STFU.mp3" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Make Them Cry\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Make Them Cry\Make_Them_Cry.mp3" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Ran To Atlanta\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Ran To Atlanta\Ran_To_Atlanta.mp3" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Whisper My Name\iceman.png" />
+	  <MauiAsset Remove="Data\albums\Drake - iceman\songs\Whisper My Name\Whisper_My_Name.mp3" />
+	</ItemGroup>
+
 </Project>
