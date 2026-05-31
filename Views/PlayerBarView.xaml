@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WaveTuneNew.Views.PlayerBarView">
 
-    <Border BackgroundColor="#181818"
-            StrokeThickness="0"
-            IsVisible="{Binding HasCurrentSong}">
+    <Border BackgroundColor="#181818" StrokeThickness="0">
         <Border.Shadow>
             <Shadow Brush="Black" Offset="0,-4" Radius="12" Opacity="0.6" />
         </Border.Shadow>
@@ -19,9 +17,9 @@
                 <Border StrokeShape="RoundRectangle 4"
                         StrokeThickness="0"
                         HeightRequest="52"
-                        WidthRequest="52">
-                    <Image Source="{Binding CurrentSong.PictureUrl}"
-                           Aspect="AspectFill" />
+                        WidthRequest="52"
+                        BackgroundColor="#2A2A2A">
+                    <Image Source="{Binding CurrentSong.PictureUrl}" Aspect="AspectFill" />
                 </Border>
                 <VerticalStackLayout VerticalOptions="Center" Spacing="3">
                     <Label Text="{Binding CurrentSong.Title}"
@@ -40,13 +38,14 @@
                                  VerticalOptions="Center"
                                  HorizontalOptions="Center"
                                  Spacing="8">
-                <HorizontalStackLayout Spacing="16"
+                <HorizontalStackLayout Spacing="20"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center">
+
                     <ImageButton Source="previousmus.png"
                                  Command="{Binding PlayPreviousCommand}"
-                                 HeightRequest="32"
-                                 WidthRequest="32"
+                                 HeightRequest="28"
+                                 WidthRequest="28"
                                  BackgroundColor="Transparent"
                                  ToolTipProperties.Text="Предыдущий" />
 
@@ -56,8 +55,8 @@
                             BackgroundColor="White"
                             StrokeThickness="0">
                         <ImageButton Command="{Binding TogglePlayCommand}"
-                                     HeightRequest="24"
-                                     WidthRequest="24"
+                                     HeightRequest="16"
+                                     WidthRequest="16"
                                      Aspect="AspectFit"
                                      HorizontalOptions="Center"
                                      VerticalOptions="Center"
@@ -81,10 +80,11 @@
 
                     <ImageButton Source="nextmus.png"
                                  Command="{Binding PlayNextCommand}"
-                                 HeightRequest="32"
-                                 WidthRequest="32"
+                                 HeightRequest="28"
+                                 WidthRequest="28"
                                  BackgroundColor="Transparent"
                                  ToolTipProperties.Text="Следующий" />
+
                 </HorizontalStackLayout>
 
                 <ProgressBar Progress="{Binding PlayProgress}"
@@ -99,28 +99,16 @@
                                    Spacing="8"
                                    HorizontalOptions="End"
                                    VerticalOptions="Center">
-                <Grid ColumnDefinitions="Auto, Auto"
-                      ColumnSpacing="6"
-                      VerticalOptions="Center">
-                    <Grid.GestureRecognizers>
-                        <PointerGestureRecognizer
-                            PointerEnteredCommand="{Binding ShowVolumeCommand}"
-                            PointerExitedCommand="{Binding HideVolumeCommand}" />
-                    </Grid.GestureRecognizers>
-                    <Image Grid.Column="0"
-                           Source="volume_high.png"
-                           HeightRequest="18"
-                           WidthRequest="18"
-                           Opacity="0.7" />
-                    <Slider Grid.Column="1"
-                            Value="{Binding Volume}"
-                            WidthRequest="90"
-                            MinimumTrackColor="White"
-                            MaximumTrackColor="#535353"
-                            ThumbColor="White"
-                            IsVisible="{Binding IsVolumeVisible}"
-                            ToolTipProperties.Text="Громкость" />
-                </Grid>
+                <Image Source="volume_high.png"
+                       HeightRequest="18"
+                       WidthRequest="18"
+                       Opacity="0.7" />
+                <Slider Value="{Binding Volume}"
+                        WidthRequest="90"
+                        MinimumTrackColor="White"
+                        MaximumTrackColor="#535353"
+                        ThumbColor="White"
+                        ToolTipProperties.Text="Громкость" />
             </HorizontalStackLayout>
 
         </Grid>

@@ -4,9 +4,12 @@
     {
         Unknown,
         Trap,
+        Rap,
         Hyperpop,
         NewJazz,
-        CloudRap
+        CloudRap,
+        HipHop,
+        PopPunk,
     }
 
     public class Song
@@ -34,6 +37,10 @@
             "hyperpop" => Genre.Hyperpop,
             "new jazz" => Genre.NewJazz,
             "cloud rap" => Genre.CloudRap,
+            "hip-hop" => Genre.HipHop,
+            "hip hop" => Genre.HipHop,
+            "pop-punk" => Genre.PopPunk,
+            "rap" => Genre.Rap,
             _ => Genre.Unknown
         };
     }

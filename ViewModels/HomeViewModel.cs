@@ -101,9 +101,12 @@ namespace WaveTuneNew.ViewModels
             var genreList = new[]
             {
                 new { Name = "Trap", Genre = Genre.Trap, DbValue = "trap", Color = "#1a1a2e" },
+                new { Name = "rap", Genre = Genre.Rap, DbValue = "rap", Color = "#1a4rt2e" },
                 new { Name = "Hyperpop", Genre = Genre.Hyperpop, DbValue = "hyperpop", Color = "#16213e" },
                 new { Name = "New Jazz", Genre = Genre.NewJazz, DbValue = "new jazz", Color = "#0f3460" },
-                new { Name = "Cloud Rap", Genre = Genre.CloudRap, DbValue = "cloud rap", Color = "#2d1b4e" }
+                new { Name = "Cloud Rap", Genre = Genre.CloudRap, DbValue = "cloud rap", Color = "#2d1b4e" },
+                new { Name = "Hip-Hop", Genre = Genre.HipHop, DbValue = "hip-hop", Color = "#1e3a2f" },
+                new { Name = "Pop-Punk", Genre = Genre.PopPunk, DbValue = "pop-punk", Color = "#3a1e1e" },
             };
 
             try

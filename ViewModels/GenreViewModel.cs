@@ -32,9 +32,12 @@ namespace WaveTuneNew.ViewModels
             var genreStr = _genre switch
             {
                 Genre.Trap => "trap",
+                Genre.Rap => "rap",
                 Genre.Hyperpop => "hyperpop",
                 Genre.NewJazz => "new jazz",
                 Genre.CloudRap => "cloud rap",
+                Genre.HipHop => "hip-hop",
+                Genre.PopPunk => "pop-punk",
                 _ => string.Empty
             };
 
