@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveTuneNew.AdminPage"
+             xmlns:vm="clr-namespace:WaveTuneNew.ViewModels"
+             Title="Админ-панель"
+             BackgroundColor="#121212">
+
+    <ContentPage.BindingContext>
+        <vm:AdminViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="⚙️ Админ-панель" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+                <Button Text="⟲" Command="{Binding RefreshDataCommand}" WidthRequest="40" HeightRequest="40" CornerRadius="20" BackgroundColor="#333" TextColor="White"/>
+                <Button Text="← Назад" Command="{Binding GoBackCommand}" HorizontalOptions="EndAndExpand" BackgroundColor="#BB86FC" TextColor="Black"/>
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding StatusMessage}" TextColor="#03DAC6" HorizontalOptions="Center" FontAttributes="Bold"/>
+            <ActivityIndicator IsRunning="{Binding IsLoading}" Color="#BB86FC" IsVisible="{Binding IsLoading}" HorizontalOptions="Center"/>
+
+            <Label Text="📀 Альбомы" FontSize="20" FontAttributes="Bold" TextColor="White" Margin="0,10,0,5"/>
+            <HorizontalStackLayout Spacing="5">
+                <Entry Text="{Binding NewAlbumTitle}" Placeholder="Название" WidthRequest="120" TextColor="White" PlaceholderColor="#888" BackgroundColor="#2C2C2C"/>
+                <Entry Text="{Binding NewAlbumAuthor}" Placeholder="Автор" WidthRequest="100" TextColor="White" PlaceholderColor="#888" BackgroundColor="#2C2C2C"/>
+                <Button Text="➕" Command="{Binding AddAlbumCommand}" BackgroundColor="#03DAC6" WidthRequest="40"/>
+            </HorizontalStackLayout>
+            <CollectionView ItemsSource="{Binding Albums}" HeightRequest="150">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#1E1E1E" Padding="10" Margin="0,2" BorderColor="#333">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Title}" TextColor="White" VerticalOptions="Center"/>
+                                <Button Grid.Column="1" Text="🗑" BackgroundColor="#CF6679" WidthRequest="36" HeightRequest="36"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminViewModel}}, Path=DeleteAlbumCommand}"
+                                        CommandParameter="{Binding Id}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="🎵 Треки" FontSize="20" FontAttributes="Bold" TextColor="White" Margin="0,10,0,5"/>
+            <HorizontalStackLayout Spacing="5">
+                <Entry Text="{Binding NewSongTitle}" Placeholder="Название" WidthRequest="100" TextColor="White" PlaceholderColor="#888" BackgroundColor="#2C2C2C"/>
+                <Entry Text="{Binding NewSongAuthor}" Placeholder="Автор" WidthRequest="80" TextColor="White" PlaceholderColor="#888" BackgroundColor="#2C2C2C"/>
+                <Entry Text="{Binding NewSongGenre}" Placeholder="Жанр" WidthRequest="80" TextColor="White" PlaceholderColor="#888" BackgroundColor="#2C2C2C"/>
+                <Button Text="➕" Command="{Binding AddSongCommand}" BackgroundColor="#03DAC6" WidthRequest="40"/>
+            </HorizontalStackLayout>
+            <CollectionView ItemsSource="{Binding Songs}" HeightRequest="150">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#1E1E1E" Padding="10" Margin="0,2" BorderColor="#333">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Title}" TextColor="White" VerticalOptions="Center"/>
+                                <Button Grid.Column="1" Text="🗑" BackgroundColor="#CF6679" WidthRequest="36" HeightRequest="36"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminViewModel}}, Path=DeleteSongCommand}"
+                                        CommandParameter="{Binding Id}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="👥 Пользователи" FontSize="20" FontAttributes="Bold" TextColor="White" Margin="0,10,0,5"/>
+            <CollectionView ItemsSource="{Binding Users}" HeightRequest="150">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#1E1E1E" Padding="10" Margin="0,2" BorderColor="#333">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Login}" TextColor="White" VerticalOptions="Center"/>
+                                <Button Grid.Column="1" Text="🗑" BackgroundColor="#CF6679" WidthRequest="36" HeightRequest="36"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminViewModel}}, Path=DeleteUserCommand}"
+                                        CommandParameter="{Binding Id}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

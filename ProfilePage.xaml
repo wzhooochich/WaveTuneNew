@@ -34,6 +34,16 @@
                    FontSize="18"
                    FontAttributes="Bold"
                    VerticalOptions="Center" />
+
+            <Button x:Name="AdminButton"
+                    Grid.Column="1"
+                    Text="⚙️ Админ-панель" 
+                    Clicked="OnAdminPanelClicked"
+                    BackgroundColor="#BB86FC" 
+                    TextColor="Black" 
+                    HorizontalOptions="End"
+                    Margin="0,0,10,0"
+                    IsVisible="False"/>
         </Grid>
 
         <ScrollView Grid.Row="1">

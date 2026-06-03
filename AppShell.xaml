@@ -39,4 +39,9 @@
         Title="GenrePage"
         ContentTemplate="{DataTemplate local:GenrePage}"
         Route="GenrePage" />
+    <ShellContent
+        Title="AdminPage"
+        ContentTemplate="{DataTemplate local:AdminPage}"
+        Route="AdminPage" 
+        FlyoutItemIsVisible="False" />
 </Shell>

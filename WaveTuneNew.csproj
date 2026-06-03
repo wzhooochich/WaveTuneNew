@@ -34,6 +34,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="AdminPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="SearchResultsPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

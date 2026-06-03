@@ -29,7 +29,7 @@ namespace WaveTuneNew.ViewModels
             }
 
             var db = new DataBase();
-            const string query = "SELECT id, password FROM users WHERE login = @login";
+            const string query = "SELECT id, password, is_admin FROM users WHERE login = @login"; 
 
             using var connection = db.getConnection();
             await connection.OpenAsync();
@@ -47,6 +47,7 @@ namespace WaveTuneNew.ViewModels
 
             var passwordFromDb = reader["password"].ToString() ?? string.Empty;
             var userId = reader.GetInt32("id");
+            var isAdmin = reader.GetBoolean("is_admin"); 
 
             if (passwordFromDb != Password)
             {
@@ -57,7 +58,8 @@ namespace WaveTuneNew.ViewModels
             SessionService.CurrentUser = new User
             {
                 Id = userId,
-                Login = Login
+                Login = Login,
+                IsAdmin = isAdmin 
             };
 
             await Shell.Current.GoToAsync("//HomePage");

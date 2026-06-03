@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Login { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public bool IsAdmin { get; set; } = false;  
         public UserProfile? Profile { get; set; }
         public List<Song> Songs { get; set; } = new();
         public List<Song> LikedSongs { get; set; } = new();
