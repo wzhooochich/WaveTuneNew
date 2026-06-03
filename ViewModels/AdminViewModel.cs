@@ -11,21 +11,16 @@ namespace WaveTuneNew.ViewModels
     {
         private readonly DataBase _db = new();
 
-        [ObservableProperty] private ObservableCollection<Album> _albums = new();
         [ObservableProperty] private ObservableCollection<Song> _songs = new();
         [ObservableProperty] private ObservableCollection<User> _users = new();
         [ObservableProperty] private string _statusMessage = string.Empty;
         [ObservableProperty] private bool _isLoading = false;
-        [ObservableProperty] private string _newAlbumTitle = string.Empty;
-        [ObservableProperty] private string _newAlbumAuthor = string.Empty;
-        [ObservableProperty] private string _newSongTitle = string.Empty;
-        [ObservableProperty] private string _newSongAuthor = string.Empty;
-        [ObservableProperty] private string _newSongGenre = string.Empty;
-        [ObservableProperty] private string _newSongFilePath = string.Empty;
+        [ObservableProperty] private string _searchSongTitle = string.Empty;
+        [ObservableProperty] private string _newAdminLogin = string.Empty;
 
-        public AdminViewModel() => _ = LoadAllDataAsync();
+        public AdminViewModel() => _ = LoadDataAsync();
 
-        private async Task LoadAllDataAsync()
+        private async Task LoadDataAsync()
         {
             IsLoading = true;
             try
@@ -33,15 +28,7 @@ namespace WaveTuneNew.ViewModels
                 _db.openConnection();
                 var conn = _db.getConnection();
 
-                using var cmdA = new MySqlCommand("SELECT id, title, author, picture_url, genre FROM albums", conn);
-                using var rA = await cmdA.ExecuteReaderAsync();
-                var tempAlbums = new ObservableCollection<Album>();
-                while (await rA.ReadAsync())
-                    tempAlbums.Add(new Album { Id = rA.GetInt32("id"), Title = rA.GetString("title"), Author = rA.GetString("author"), PictureUrl = rA["picture_url"] as string ?? "damage.png", Genre = rA["genre"] as string ?? "Unknown" });
-                Albums = tempAlbums;
-                await rA.CloseAsync();
-
-                using var cmdS = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs", conn);
+                using var cmdS = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs ORDER BY title", conn);
                 using var rS = await cmdS.ExecuteReaderAsync();
                 var tempSongs = new ObservableCollection<Song>();
                 while (await rS.ReadAsync())
@@ -49,96 +36,110 @@ namespace WaveTuneNew.ViewModels
                 Songs = tempSongs;
                 await rS.CloseAsync();
 
-                using var cmdU = new MySqlCommand("SELECT id, login, password FROM users", conn);
+                using var cmdU = new MySqlCommand("SELECT id, login FROM users WHERE is_admin = 1 ORDER BY login", conn);
                 using var rU = await cmdU.ExecuteReaderAsync();
                 var tempUsers = new ObservableCollection<User>();
                 while (await rU.ReadAsync())
-                    tempUsers.Add(new User { Id = rU.GetInt32("id"), Login = rU.GetString("login"), Password = rU.GetString("password") });
+                    tempUsers.Add(new User { Id = rU.GetInt32("id"), Login = rU.GetString("login") });
                 Users = tempUsers;
 
-                StatusMessage = "Данные загружены";
+                StatusMessage = $"Загружено: {Songs.Count} треков, {Users.Count} админов";
             }
-            catch (Exception ex) { StatusMessage = ex.Message; }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
             finally { _db.closeConnection(); IsLoading = false; }
         }
 
-        [RelayCommand] private async Task RefreshDataAsync() => await LoadAllDataAsync();
+        [RelayCommand] private async Task RefreshDataAsync() => await LoadDataAsync();
         [RelayCommand] public async Task GoBackAsync() => await (Application.Current?.MainPage?.Navigation?.PopAsync() ?? Task.CompletedTask);
 
         [RelayCommand]
-        private async Task AddAlbumAsync()
+        private async Task SearchSongsAsync()
         {
-            if (string.IsNullOrWhiteSpace(NewAlbumTitle) || string.IsNullOrWhiteSpace(NewAlbumAuthor))
-            { StatusMessage = "Заполните название и автора"; return; }
-            await ExecAddAlbum(NewAlbumTitle, NewAlbumAuthor, "damage.png", "Unknown");
-            NewAlbumTitle = NewAlbumAuthor = string.Empty;
-        }
+            if (string.IsNullOrWhiteSpace(SearchSongTitle))
+            {
+                await LoadDataAsync();
+                return;
+            }
 
-        [RelayCommand] private async Task DeleteAlbumAsync(int id) => await ExecDelete("DELETE FROM albums WHERE id = @id", id, "Альбом удалён");
-
-        private async Task ExecAddAlbum(string t, string a, string p, string g)
-        {
+            IsLoading = true;
             try
             {
                 _db.openConnection();
-                using var cmd = new MySqlCommand("INSERT INTO albums (title, author, picture_url, genre) VALUES (@t,@a,@p,@g)", _db.getConnection());
-                cmd.Parameters.AddWithValue("@t", t); cmd.Parameters.AddWithValue("@a", a);
-                cmd.Parameters.AddWithValue("@p", p); cmd.Parameters.AddWithValue("@g", g);
-                await cmd.ExecuteNonQueryAsync();
-                StatusMessage = "Альбом добавлен";
-                await LoadAllDataAsync();
+                using var cmd = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs WHERE title LIKE @title ORDER BY title", _db.getConnection());
+                cmd.Parameters.AddWithValue("@title", "%" + SearchSongTitle + "%");
+                using var reader = await cmd.ExecuteReaderAsync();
+                var tempSongs = new ObservableCollection<Song>();
+                while (await reader.ReadAsync())
+                    tempSongs.Add(new Song { Id = reader.GetInt32("id"), Title = reader.GetString("title"), Author = reader.GetString("author"), PictureUrl = reader["picture_url"] as string ?? "damage.png", FilePath = reader["file_path"] as string ?? "", Genre = Song.ParseGenre(reader["genre"] as string), AlbumId = reader["album_id"] as int?, UserId = reader["user_id"] as int? });
+                Songs = tempSongs;
+                StatusMessage = $"Найдено: {Songs.Count}";
             }
-            catch (Exception ex) { StatusMessage = ex.Message; }
-            finally { _db.closeConnection(); }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
+            finally { _db.closeConnection(); IsLoading = false; }
         }
 
         [RelayCommand]
-        private async Task AddSongAsync()
+        private async Task DeleteSongAsync(int id)
         {
-            if (string.IsNullOrWhiteSpace(NewSongTitle)) { StatusMessage = "Введите название трека"; return; }
-            await ExecAddSong(NewSongTitle, NewSongAuthor, "damage.png", NewSongFilePath, NewSongGenre, null, null);
-            NewSongTitle = NewSongAuthor = NewSongGenre = NewSongFilePath = string.Empty;
-        }
+            var confirm = await (Application.Current?.MainPage?.DisplayAlert("Удалить трек?", "Вы уверены?", "Да", "Нет") ?? Task.FromResult(false));
+            if (!confirm) return;
 
-        [RelayCommand] private async Task DeleteSongAsync(int id) => await ExecDelete("DELETE FROM songs WHERE id = @id", id, "Трек удалён");
-
-        private async Task ExecAddSong(string t, string a, string p, string f, string g, int? aid, int? uid)
-        {
             try
             {
                 _db.openConnection();
-                using var cmd = new MySqlCommand("INSERT INTO songs (title, author, picture_url, file_path, genre, album_id, user_id) VALUES (@t,@a,@p,@f,@g,@aid,@uid)", _db.getConnection());
-                cmd.Parameters.AddWithValue("@t", t); cmd.Parameters.AddWithValue("@a", a);
-                cmd.Parameters.AddWithValue("@p", p); cmd.Parameters.AddWithValue("@f", f);
-                cmd.Parameters.AddWithValue("@g", g); cmd.Parameters.AddWithValue("@aid", aid ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@uid", uid ?? (object)DBNull.Value);
-                await cmd.ExecuteNonQueryAsync();
-                StatusMessage = "Трек добавлен";
-                await LoadAllDataAsync();
-            }
-            catch (Exception ex) { StatusMessage = ex.Message; }
-            finally { _db.closeConnection(); }
-        }
-
-        [RelayCommand]
-        private async Task DeleteUserAsync(int id)
-        {
-            if (SessionService.CurrentUser?.Id == id) { StatusMessage = "Нельзя удалить себя"; return; }
-            await ExecDelete("DELETE FROM users WHERE id = @id", id, "Пользователь удалён");
-        }
-
-        private async Task ExecDelete(string query, int id, string msg)
-        {
-            try
-            {
-                _db.openConnection();
-                using var cmd = new MySqlCommand(query, _db.getConnection());
+                using var cmd = new MySqlCommand("DELETE FROM songs WHERE id = @id", _db.getConnection());
                 cmd.Parameters.AddWithValue("@id", id);
                 await cmd.ExecuteNonQueryAsync();
-                StatusMessage = msg;
-                await LoadAllDataAsync();
+                StatusMessage = "Трек удалён";
+                await LoadDataAsync();
             }
-            catch (Exception ex) { StatusMessage = ex.Message; }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
+            finally { _db.closeConnection(); }
+        }
+
+        [RelayCommand]
+        private async Task AddAdminAsync()
+        {
+            if (string.IsNullOrWhiteSpace(NewAdminLogin))
+            {
+                StatusMessage = "Введите логин пользователя";
+                return;
+            }
+
+            try
+            {
+                _db.openConnection();
+                var conn = _db.getConnection();
+
+                using var checkCmd = new MySqlCommand("SELECT id, login FROM users WHERE login = @login", conn);
+                checkCmd.Parameters.AddWithValue("@login", NewAdminLogin.Trim());
+                using var reader = await checkCmd.ExecuteReaderAsync();
+
+                if (!await reader.ReadAsync())
+                {
+                    StatusMessage = $"Пользователь '{NewAdminLogin}' не найден";
+                    return;
+                }
+
+                var userId = reader.GetInt32("id");
+                await reader.CloseAsync();
+
+                using var updateCmd = new MySqlCommand("UPDATE users SET is_admin = 1 WHERE id = @id", conn);
+                updateCmd.Parameters.AddWithValue("@id", userId);
+                var rows = await updateCmd.ExecuteNonQueryAsync();
+
+                if (rows > 0)
+                {
+                    StatusMessage = $"Пользователь '{NewAdminLogin}' теперь администратор";
+                    NewAdminLogin = string.Empty;
+                    await LoadDataAsync();
+                }
+                else
+                {
+                    StatusMessage = "Ошибка при назначении админа";
+                }
+            }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
             finally { _db.closeConnection(); }
         }
     }
