@@ -9,7 +9,6 @@ namespace WaveTuneNew.ViewModels
 {
     public partial class AlbumViewModel : ObservableObject
     {
-        private readonly DataBase _db = new DataBase();
         private readonly int _albumId;
         private readonly PlayerService _player;
 
@@ -37,7 +36,6 @@ namespace WaveTuneNew.ViewModels
                 const string albumQuery = "SELECT title, author, picture_url FROM albums WHERE id = @id";
                 using var albumCmd = new MySqlCommand(albumQuery, connection);
                 albumCmd.Parameters.AddWithValue("@id", _albumId);
-
                 using var albumReader = await albumCmd.ExecuteReaderAsync();
                 if (await albumReader.ReadAsync())
                 {
@@ -54,10 +52,8 @@ namespace WaveTuneNew.ViewModels
                 const string songsQuery = "SELECT id, title, author, picture_url, file_path, genre FROM songs WHERE album_id = @albumId";
                 using var songsCmd = new MySqlCommand(songsQuery, connection);
                 songsCmd.Parameters.AddWithValue("@albumId", _albumId);
-
                 using var songsReader = await songsCmd.ExecuteReaderAsync();
                 var tempSongs = new ObservableCollection<Song>();
-
                 while (await songsReader.ReadAsync())
                 {
                     tempSongs.Add(new Song
@@ -84,6 +80,18 @@ namespace WaveTuneNew.ViewModels
         {
             var index = Items.IndexOf(song);
             _player.SetQueue(Items, index);
+        }
+
+        [RelayCommand]
+        private void HoverSong(Song song)
+        {
+            song.IsHovered = true;
+        }
+
+        [RelayCommand]
+        private void UnhoverSong(Song song)
+        {
+            song.IsHovered = false;
         }
 
         [RelayCommand]

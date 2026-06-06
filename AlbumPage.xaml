@@ -10,7 +10,7 @@
     <Grid RowDefinitions="60, *, Auto">
 
         <Border Grid.Row="0" BackgroundColor="#181818" StrokeThickness="0">
-            <Grid ColumnDefinitions="*,*,*" Padding="20,0">
+            <Grid ColumnDefinitions="*, Auto, *" Padding="20,0">
                 <ImageButton Grid.Column="0"
                              Source="back.png"
                              HeightRequest="20"
@@ -27,15 +27,15 @@
                        VerticalOptions="Center"
                        CharacterSpacing="2"/>
                 <ImageButton Grid.Column="2"
-                             Source="bell.png"
-                             HeightRequest="20"
+                             Source="heart.png"
+                             HeightRequest="22"
                              HorizontalOptions="End"
                              BackgroundColor="Transparent"
-                             ToolTipProperties.Text="Уведомления" />
+                             ToolTipProperties.Text="Нравится" />
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" RowDefinitions="Auto, Auto, *">
+        <Grid Grid.Row="1" RowDefinitions="Auto, *">
 
             <VerticalStackLayout Grid.Row="0" Margin="0,20" Spacing="15" HorizontalOptions="Center">
                 <Border StrokeShape="RoundRectangle 15"
@@ -61,55 +61,69 @@
                 </VerticalStackLayout>
             </VerticalStackLayout>
 
-            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" Padding="20,8" BackgroundColor="#181818">
-                <ImageButton Grid.Column="0"
-                             Source="music.png"
-                             HeightRequest="18"
-                             Opacity="0.7"
-                             ToolTipProperties.Text="Треки" />
-                <ImageButton Grid.Column="1"
-                             Source="eye.png"
-                             HeightRequest="18"
-                             Opacity="0.7"
-                             ToolTipProperties.Text="Просмотры" />
-                <ImageButton Grid.Column="2"
-                             Source="clock.png"
-                             HeightRequest="18"
-                             Opacity="0.7"
-                             ToolTipProperties.Text="Длительность" />
-            </Grid>
-
-            <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Items}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="20,10"
+                        <Grid Padding="20,8"
                               ColumnDefinitions="Auto, *, Auto"
                               ColumnSpacing="15">
-                            <Border Grid.Column="0" StrokeShape="RoundRectangle 6" StrokeThickness="0">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.SelectSongCommand, Source={x:Reference AlbumPageRoot}}"
+                                    CommandParameter="{Binding}" />
+                                <PointerGestureRecognizer
+                                    PointerEnteredCommand="{Binding BindingContext.HoverSongCommand, Source={x:Reference AlbumPageRoot}}"
+                                    PointerEnteredCommandParameter="{Binding}"
+                                    PointerExitedCommand="{Binding BindingContext.UnhoverSongCommand, Source={x:Reference AlbumPageRoot}}"
+                                    PointerExitedCommandParameter="{Binding}" />
+                            </Grid.GestureRecognizers>
+                            <Grid.Triggers>
+                                <DataTrigger TargetType="Grid"
+                                             Binding="{Binding IsHovered}"
+                                             Value="True">
+                                    <Setter Property="BackgroundColor" Value="#1E1E1E" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Grid"
+                                             Binding="{Binding IsHovered}"
+                                             Value="False">
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                </DataTrigger>
+                            </Grid.Triggers>
+
+                            <Border Grid.Column="0"
+                                    StrokeShape="RoundRectangle 6"
+                                    StrokeThickness="0">
                                 <Image Source="{Binding PictureUrl}"
                                        WidthRequest="45"
                                        HeightRequest="45"
                                        Aspect="AspectFill" />
                             </Border>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
                                 <Label Text="{Binding Title}"
                                        TextColor="White"
                                        FontSize="15"
                                        FontAttributes="Bold" />
-                                <Label Text="{Binding Author}"
-                                       TextColor="#888888"
-                                       FontSize="12" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="{Binding Author}"
+                                           TextColor="#888888"
+                                           FontSize="12" />
+                                    <Border BackgroundColor="#2A2A2A"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="6,2">
+                                        <Label Text="{Binding GenreDisplay}"
+                                               TextColor="#AAAAAA"
+                                               FontSize="10" />
+                                    </Border>
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
+
                             <Label Grid.Column="2"
                                    Text="::"
                                    TextColor="#444444"
                                    VerticalOptions="Center"
                                    FontSize="18" />
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding BindingContext.SelectSongCommand, Source={x:Reference AlbumPageRoot}}"
-                                    CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
