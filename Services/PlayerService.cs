@@ -89,7 +89,7 @@ namespace WaveTuneNew.Services
                 IsPlaying = true;
                 _timer.Start();
             }
-            catch (Exception ex) // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            catch (Exception ex) 
             {
                 System.Diagnostics.Debug.WriteLine($"ОШИБКА ПЛЕЕРА: {ex.Message}");
                 IsPlaying = false;

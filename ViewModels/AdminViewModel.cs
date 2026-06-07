@@ -38,7 +38,6 @@ namespace WaveTuneNew.ViewModels
                 using var rS = await cmdS.ExecuteReaderAsync();
                 var tempSongs = new ObservableCollection<Song>();
                 while (await rS.ReadAsync())
-                    // ПЕРЕЧИСЛЕНИЯ — Song.ParseGenre возвращает Genre enum
                     tempSongs.Add(new Song { Id = rS.GetInt32("id"), Title = rS.GetString("title"), Author = rS.GetString("author"), PictureUrl = rS["picture_url"] as string ?? "damage.png", FilePath = rS["file_path"] as string ?? "", Genre = Song.ParseGenre(rS["genre"] as string), AlbumId = rS["album_id"] as int?, UserId = rS["user_id"] as int? });
                 Songs = tempSongs;
                 await rS.CloseAsync();
@@ -53,7 +52,7 @@ namespace WaveTuneNew.ViewModels
 
                 StatusMessage = $"Загружено: {Songs.Count} треков, {Users.Count} админов";
             }
-            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; } // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; } 
             finally { _db.closeConnection(); IsLoading = false; }
         }
 
@@ -61,7 +60,7 @@ namespace WaveTuneNew.ViewModels
         [RelayCommand] public async Task GoBackAsync() => await (Application.Current?.MainPage?.Navigation?.PopAsync() ?? Task.CompletedTask);
 
         [RelayCommand]
-        private async Task SearchSongsAsync() // ПОИСК И ФИЛЬТРАЦИЯ
+        private async Task SearchSongsAsync() 
         {
             if (string.IsNullOrWhiteSpace(SearchSongTitle))
             {
@@ -70,10 +69,9 @@ namespace WaveTuneNew.ViewModels
             }
 
             IsLoading = true;
-            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            try 
             {
                 _db.openConnection();
-                // ПОИСК — WHERE title LIKE @title; СОРТИРОВКА — ORDER BY title
                 using var cmd = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs WHERE title LIKE @title ORDER BY title", _db.getConnection());
                 cmd.Parameters.AddWithValue("@title", "%" + SearchSongTitle + "%");
                 using var reader = await cmd.ExecuteReaderAsync();
@@ -88,12 +86,12 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteSongAsync(int id) // МЕТОДЫ КЛАССОВ
+        private async Task DeleteSongAsync(int id) 
         {
             var confirm = await (Application.Current?.MainPage?.DisplayAlert("Удалить трек?", "Вы уверены?", "Да", "Нет") ?? Task.FromResult(false));
             if (!confirm) return;
 
-            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            try 
             {
                 _db.openConnection();
                 using var cmd = new MySqlCommand("DELETE FROM songs WHERE id = @id", _db.getConnection());
@@ -107,7 +105,7 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task AddAdminAsync() // РАЗГРАНИЧЕНИЕ ПРАВ ДОСТУПА
+        private async Task AddAdminAsync() 
         {
             if (string.IsNullOrWhiteSpace(NewAdminLogin))
             {
@@ -115,7 +113,7 @@ namespace WaveTuneNew.ViewModels
                 return;
             }
 
-            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            try 
             {
                 _db.openConnection();
                 var conn = _db.getConnection();
@@ -126,7 +124,7 @@ namespace WaveTuneNew.ViewModels
 
                 if (!await reader.ReadAsync())
                 {
-                    // РАЗГРАНИЧЕНИЕ ПРАВ — понятное сообщение если пользователь не найден
+
                     StatusMessage = $"Пользователь '{NewAdminLogin}' не найден";
                     return;
                 }
@@ -134,7 +132,7 @@ namespace WaveTuneNew.ViewModels
                 var userId = reader.GetInt32("id");
                 await reader.CloseAsync();
 
-                // РАЗГРАНИЧЕНИЕ ПРАВ — назначение прав администратора через is_admin = 1
+
                 using var updateCmd = new MySqlCommand("UPDATE users SET is_admin = 1 WHERE id = @id", conn);
                 updateCmd.Parameters.AddWithValue("@id", userId);
                 var rows = await updateCmd.ExecuteNonQueryAsync();
@@ -163,12 +161,12 @@ namespace WaveTuneNew.ViewModels
                 return;
             }
 
-            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            try 
             {
                 var fileName = $"songs_export_{DateTime.Now:yyyyMMdd_HHmm}.docx";
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
 
-                // ЭКСПОРТ В WORD — создание .docx через DocumentFormat.OpenXml
+                // ЭКСПОРТ В WORD — DocumentFormat.OpenXml
                 using var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document);
                 var mainPart = doc.AddMainDocumentPart();
                 mainPart.Document = new OxmlWord.Document(new OxmlWord.Body());

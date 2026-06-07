@@ -6,7 +6,7 @@
              x:Name="ThisHomePage"
              BackgroundColor="#121212"
              Title="Home">
-    <Grid RowDefinitions="64, *, Auto">
+    <Grid RowDefinitions="64, *, Auto, Auto">
 
         <Grid Grid.Row="0"
               BackgroundColor="#121212"
@@ -30,7 +30,8 @@
                     BackgroundColor="#2A2A2A"
                     Padding="16,0"
                     HeightRequest="40"
-                    StrokeThickness="0">
+                    StrokeThickness="0"
+                    HorizontalOptions="FillAndExpand">
                 <Grid ColumnDefinitions="Auto, *" ColumnSpacing="8">
                     <Image Grid.Column="0"
                            Source="search.png"
@@ -55,7 +56,8 @@
                     WidthRequest="40"
                     BackgroundColor="#282828"
                     StrokeThickness="0"
-                    ToolTipProperties.Text="Профиль">
+                    ToolTipProperties.Text="Профиль"
+                    VerticalOptions="Center">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnProfileTapped" />
                 </Border.GestureRecognizers>
@@ -82,7 +84,7 @@
                     <Label Grid.Column="0"
                            Text="Альбомы"
                            TextColor="White"
-                           FontSize="22"
+                           FontSize="24"
                            FontAttributes="Bold"
                            VerticalOptions="Center" />
                     <Button Grid.Column="2"
@@ -113,15 +115,15 @@
 
                 <ScrollView x:Name="AlbumsScroll"
                             Orientation="Horizontal"
-                            HeightRequest="200"
+                            HeightRequest="250"
                             HorizontalScrollBarVisibility="Never">
                     <CollectionView ItemsSource="{Binding Albums}">
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="16" />
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="20" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <VerticalStackLayout Spacing="8" WidthRequest="150">
+                                <VerticalStackLayout Spacing="8" WidthRequest="180">
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroupList>
                                             <VisualStateGroup x:Name="CommonStates">
@@ -142,8 +144,8 @@
                                     </VisualStateManager.VisualStateGroups>
                                     <Border StrokeShape="RoundRectangle 8"
                                             StrokeThickness="0"
-                                            HeightRequest="150"
-                                            WidthRequest="150">
+                                            HeightRequest="180"
+                                            WidthRequest="180">
                                         <ImageButton Source="{Binding PictureUrl}"
                                                      Aspect="AspectFill"
                                                      Command="{Binding BindingContext.GoToAlbumCommand, Source={x:Reference ThisHomePage}}"
@@ -153,14 +155,16 @@
                                     </Border>
                                     <Label Text="{Binding Title}"
                                            TextColor="White"
-                                           FontSize="13"
+                                           FontSize="14"
                                            FontAttributes="Bold"
-                                           MaxLines="1" />
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation" />
                                     <Label Text="{Binding Author}"
                                            TextColor="#B3B3B3"
                                            FontSize="12"
                                            MaxLines="1"
-                                           Margin="0,-6,0,0" />
+                                           Margin="0,-4,0,0"
+                                           LineBreakMode="TailTruncation" />
                                 </VerticalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -169,12 +173,12 @@
 
                 <Grid ColumnDefinitions="Auto, *, Auto, Auto"
                       ColumnSpacing="8"
-                      Margin="0,28,0,16"
+                      Margin="0,32,0,16"
                       VerticalOptions="Center">
                     <Label Grid.Column="0"
                            Text="Жанры"
                            TextColor="White"
-                           FontSize="22"
+                           FontSize="24"
                            FontAttributes="Bold"
                            VerticalOptions="Center" />
                     <Button Grid.Column="2"
@@ -205,18 +209,18 @@
 
                 <ScrollView x:Name="GenresScroll"
                             Orientation="Horizontal"
-                            HeightRequest="140"
+                            HeightRequest="160"
                             HorizontalScrollBarVisibility="Never">
                     <CollectionView ItemsSource="{Binding Genres}">
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="16" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border StrokeShape="RoundRectangle 8"
                                         StrokeThickness="0"
-                                        WidthRequest="200"
-                                        HeightRequest="130">
+                                        WidthRequest="240"
+                                        HeightRequest="150">
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroupList>
                                             <VisualStateGroup x:Name="CommonStates">
@@ -245,10 +249,12 @@
                                         <BoxView BackgroundColor="#99000000" />
                                         <Label Text="{Binding Name}"
                                                TextColor="White"
-                                               FontSize="17"
+                                               FontSize="18"
                                                FontAttributes="Bold"
                                                HorizontalOptions="Center"
-                                               VerticalOptions="Center" />
+                                               VerticalOptions="Center"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation" />
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -256,28 +262,29 @@
                     </CollectionView>
                 </ScrollView>
 
-                <HorizontalStackLayout HorizontalOptions="Center"
-                                       Margin="0,24,0,0"
-                                       Spacing="16">
-                    <Label Text="О приложении"
-                           TextColor="#535353"
-                           FontSize="11">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnAboutClicked" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Label Text="·" TextColor="#535353" FontSize="11" VerticalOptions="Center"/>
-                    <Label Text="Справка"
-                           TextColor="#535353"
-                           FontSize="11">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnHelpClicked" />
-                        </Label.GestureRecognizers>
-                    </Label>
-                </HorizontalStackLayout>
-
             </VerticalStackLayout>
         </ScrollView>
+
+        <HorizontalStackLayout Grid.Row="2"
+                               HorizontalOptions="Center"
+                               Margin="0,12,0,12"
+                               Spacing="16">
+            <Label Text="О приложении"
+                   TextColor="#535353"
+                   FontSize="11">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAboutClicked" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="·" TextColor="#535353" FontSize="11" VerticalOptions="Center"/>
+            <Label Text="Справка"
+                   TextColor="#535353"
+                   FontSize="11">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHelpClicked" />
+                </Label.GestureRecognizers>
+            </Label>
+        </HorizontalStackLayout>
 
         <Border Grid.Row="1"
                 x:Name="SuggestionsPanel"
@@ -324,11 +331,13 @@
                                        TextColor="White"
                                        FontSize="13"
                                        FontAttributes="Bold"
-                                       MaxLines="1" />
+                                       MaxLines="1"
+                                       LineBreakMode="TailTruncation" />
                                 <Label Text="{Binding Author}"
                                        TextColor="#B3B3B3"
                                        FontSize="11"
-                                       MaxLines="1" />
+                                       MaxLines="1"
+                                       LineBreakMode="TailTruncation" />
                             </VerticalStackLayout>
                             <Border Grid.Column="2"
                                     BackgroundColor="{Binding TypeColor}"
@@ -351,7 +360,7 @@
             </CollectionView>
         </Border>
 
-        <views:PlayerBarView Grid.Row="2" />
+        <views:PlayerBarView Grid.Row="3" />
 
     </Grid>
 </ContentPage>

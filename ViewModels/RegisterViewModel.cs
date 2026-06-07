@@ -15,14 +15,14 @@ namespace WaveTuneNew.ViewModels
         [ObservableProperty] private string errorMessage = string.Empty;
 
         [RelayCommand]
-        private void FocusPassword(object parameter) // МЕТОДЫ КЛАССОВ
+        private void FocusPassword(object parameter) 
         {
             if (parameter is Entry entry)
                 entry.Focus();
         }
 
         [RelayCommand]
-        private void ClearForm() // МЕТОДЫ КЛАССОВ
+        private void ClearForm() 
         {
             Login = string.Empty;
             Password = string.Empty;
@@ -30,13 +30,12 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task RegisterAsync() // ПОТОКИ — async/await; МЕТОДЫ КЛАССОВ
+        private async Task RegisterAsync() 
         {
             ErrorMessage = string.Empty;
 
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
             {
-                // РАЗГРАНИЧЕНИЕ ПРАВ — понятное сообщение об ошибке пользователю
                 ErrorMessage = "Enter login and password";
                 return;
             }
@@ -55,13 +54,12 @@ namespace WaveTuneNew.ViewModels
             }
 
             var db = new DataBase();
-            // БД — три запроса к таблице users
             const string checkQuery = "SELECT COUNT(*) FROM users WHERE login = @login";
             const string insertQuery = "INSERT INTO users (login, password) VALUES (@login, @password)";
             const string getIdQuery = "SELECT id FROM users WHERE login = @login";
 
             using var connection = db.getConnection();
-            await connection.OpenAsync(); // ПОТОКИ — async открытие соединения
+            await connection.OpenAsync(); 
 
             using (var checkCmd = new MySqlCommand(checkQuery, connection))
             {
@@ -69,7 +67,6 @@ namespace WaveTuneNew.ViewModels
                 var count = (long)(await checkCmd.ExecuteScalarAsync())!;
                 if (count > 0)
                 {
-                    // РАЗГРАНИЧЕНИЕ ПРАВ — запрет регистрации с занятым логином
                     ErrorMessage = "This login is already taken";
                     return;
                 }
