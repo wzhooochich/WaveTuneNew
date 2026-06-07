@@ -142,5 +142,47 @@ namespace WaveTuneNew.ViewModels
             catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
             finally { _db.closeConnection(); }
         }
+
+        [RelayCommand]
+        private async Task ExportSongsAsync()
+        {
+            if (Songs.Count == 0)
+            {
+                StatusMessage = "Нет треков для экспорта";
+                return;
+            }
+
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"Экспорт треков WaveTune — {DateTime.Now:dd.MM.yyyy HH:mm}");
+                sb.AppendLine(new string('-', 50));
+
+                int i = 1;
+                foreach (var s in Songs)
+                {
+                    sb.AppendLine($"{i++}. {s.Title} — {s.Author}");
+                    if (s.Genre != null)
+                        sb.AppendLine($"   Жанр: {s.Genre}");
+                    if (s.AlbumId.HasValue)
+                        sb.AppendLine($"   Альбом ID: {s.AlbumId}");
+                }
+
+                sb.AppendLine(new string('-', 50));
+                sb.AppendLine($"Всего треков: {Songs.Count}");
+
+                var fileName = $"songs_export_{DateTime.Now:yyyyMMdd_HHmm}.txt";
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+                await File.WriteAllTextAsync(path, sb.ToString(), System.Text.Encoding.UTF8);
+
+                StatusMessage = $"Экспорт сохранён: {fileName}";
+
+                await (Application.Current?.MainPage?.DisplayAlert(
+                    "Готово",
+                    $"Файл сохранён:\n{path}",
+                    "OK") ?? Task.CompletedTask);
+            }
+            catch (Exception ex) { StatusMessage = $"Ошибка экспорта: {ex.Message}"; }
+        }
     }
 }

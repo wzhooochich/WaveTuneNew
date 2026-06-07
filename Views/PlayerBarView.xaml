@@ -21,12 +21,18 @@
                         BackgroundColor="#2A2A2A">
                     <Image Source="{Binding CurrentSong.PictureUrl}" Aspect="AspectFill" />
                 </Border>
+
                 <VerticalStackLayout VerticalOptions="Center" Spacing="3">
                     <Label Text="{Binding CurrentSong.Title}"
                            TextColor="White"
                            FontAttributes="Bold"
                            FontSize="13"
-                           MaxLines="1" />
+                           MaxLines="1"
+                           TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSongTitleTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
                     <Label Text="{Binding CurrentSong.Author}"
                            TextColor="#B3B3B3"
                            FontSize="11"

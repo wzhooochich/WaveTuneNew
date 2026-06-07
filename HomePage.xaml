@@ -124,6 +124,24 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <VerticalStackLayout Spacing="8" WidthRequest="150">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="Opacity" Value="1" />
+                                                        <Setter Property="Scale" Value="1" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="Opacity" Value="0.85" />
+                                                        <Setter Property="Scale" Value="1.04" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
                                     <Border StrokeShape="RoundRectangle 8"
                                             StrokeThickness="0"
                                             HeightRequest="150"
@@ -201,6 +219,24 @@
                                         StrokeThickness="0"
                                         WidthRequest="200"
                                         HeightRequest="130">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="Scale" Value="1" />
+                                                        <Setter Property="Opacity" Value="1" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="Scale" Value="1.04" />
+                                                        <Setter Property="Opacity" Value="0.85" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer
                                             Command="{Binding BindingContext.GoToGenreCommand, Source={x:Reference ThisHomePage}}"
@@ -235,7 +271,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Подсказки поиска — поверх всего контента -->
+        <!-- Подсказки поиска -->
         <Border Grid.Row="1"
                 x:Name="SuggestionsPanel"
                 BackgroundColor="#282828"
@@ -253,6 +289,22 @@
                         <Grid Padding="12,10"
                               ColumnDefinitions="Auto, *, Auto"
                               ColumnSpacing="12">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#333333" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
                             <Border Grid.Column="0"
                                     StrokeShape="RoundRectangle 4"
                                     StrokeThickness="0"

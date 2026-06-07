@@ -9,29 +9,14 @@ namespace WaveTuneNew.ViewModels
 {
     public partial class ProfileViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string nickname = string.Empty;
-
-        [ObservableProperty]
-        private string avatarUrl = "default_avatar.png";
-
-        [ObservableProperty]
-        private string bio = string.Empty;
-
-        [ObservableProperty]
-        private string login = string.Empty;
-
-        [ObservableProperty]
-        private bool isTracksTabVisible = true;
-
-        [ObservableProperty]
-        private bool isAlbumsTabVisible = false;
-
-        [ObservableProperty]
-        private Color tracksTabButtonColor = Color.FromHex("#602191");
-
-        [ObservableProperty]
-        private Color albumsTabButtonColor = Color.FromHex("#FF252526");
+        [ObservableProperty] private string nickname = string.Empty;
+        [ObservableProperty] private string avatarUrl = "default_avatar.png";
+        [ObservableProperty] private string bio = string.Empty;
+        [ObservableProperty] private string login = string.Empty;
+        [ObservableProperty] private bool isTracksTabVisible = true;
+        [ObservableProperty] private bool isAlbumsTabVisible = false;
+        [ObservableProperty] private Color tracksTabButtonColor = Color.FromHex("#602191");
+        [ObservableProperty] private Color albumsTabButtonColor = Color.FromHex("#FF252526");
 
         public ObservableCollection<Song> LikedSongs { get; } = new();
         public ObservableCollection<Album> LikedAlbums { get; } = new();
@@ -64,10 +49,8 @@ namespace WaveTuneNew.ViewModels
             var db = new DataBase();
             using var connection = db.getConnection();
             await connection.OpenAsync();
-
             using var cmd = new MySqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@userId", user.Id);
-
             using var reader = await cmd.ExecuteReaderAsync();
             if (await reader.ReadAsync())
             {
@@ -83,7 +66,8 @@ namespace WaveTuneNew.ViewModels
             if (user == null) return;
 
             const string query = @"
-                SELECT s.* FROM songs s
+                SELECT s.id, s.title, s.author, s.picture_url, s.file_path, s.genre, s.album_id
+                FROM songs s
                 JOIN user_liked_songs uls ON s.id = uls.song_id
                 WHERE uls.user_id = @userId
                 ORDER BY uls.liked_at DESC";
@@ -93,26 +77,25 @@ namespace WaveTuneNew.ViewModels
                 var db = new DataBase();
                 using var connection = db.getConnection();
                 await connection.OpenAsync();
-
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@userId", user.Id);
-
                 using var reader = await cmd.ExecuteReaderAsync();
                 LikedSongs.Clear();
-
                 while (await reader.ReadAsync())
                 {
                     LikedSongs.Add(new Song
                     {
-                        Id = Convert.ToInt32(reader["id"]),
-                        Title = reader["title"]?.ToString() ?? "Неизвестный трек"
+                        Id = reader.GetInt32("id"),
+                        Title = reader.GetString("title"),
+                        Author = reader.GetString("author"),
+                        PictureUrl = (reader["picture_url"] as string ?? string.Empty).Replace("\\", "/"),
+                        FilePath = (reader["file_path"] as string ?? string.Empty).Replace("\\", "/"),
+                        Genre = Song.ParseGenre(reader["genre"] as string),
+                        AlbumId = reader["album_id"] == DBNull.Value ? null : reader.GetInt32("album_id")
                     });
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
         }
 
         private async Task LoadLikedAlbumsAsync()
@@ -121,7 +104,8 @@ namespace WaveTuneNew.ViewModels
             if (user == null) return;
 
             const string query = @"
-                SELECT a.* FROM albums a
+                SELECT a.id, a.title, a.author, a.picture_url
+                FROM albums a
                 JOIN user_liked_albums ula ON a.id = ula.album_id
                 WHERE ula.user_id = @userId
                 ORDER BY ula.liked_at DESC";
@@ -131,26 +115,40 @@ namespace WaveTuneNew.ViewModels
                 var db = new DataBase();
                 using var connection = db.getConnection();
                 await connection.OpenAsync();
-
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@userId", user.Id);
-
                 using var reader = await cmd.ExecuteReaderAsync();
                 LikedAlbums.Clear();
-
                 while (await reader.ReadAsync())
                 {
                     LikedAlbums.Add(new Album
                     {
-                        Id = Convert.ToInt32(reader["id"]),
-                        Title = reader["title"]?.ToString() ?? "Неизвестный альбом"
+                        Id = reader.GetInt32("id"),
+                        Title = reader.GetString("title"),
+                        Author = reader.GetString("author"),
+                        PictureUrl = (reader["picture_url"] as string ?? string.Empty).Replace("\\", "/")
                     });
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
+        }
+
+        [RelayCommand]
+        private async Task GoToSong(Song song)
+        {
+            if (song == null) return;
+            var navigation = Application.Current?.MainPage?.Navigation;
+            if (navigation != null)
+                await navigation.PushAsync(new TrackPage(song));
+        }
+
+        [RelayCommand]
+        private async Task GoToAlbum(Album album)
+        {
+            if (album == null) return;
+            var navigation = Application.Current?.MainPage?.Navigation;
+            if (navigation != null)
+                await navigation.PushAsync(new AlbumPage(album.Id));
         }
 
         [RelayCommand]

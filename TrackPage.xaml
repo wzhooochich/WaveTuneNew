@@ -17,7 +17,7 @@
                              Command="{Binding GoBackCommand}"
                              ToolTipProperties.Text="Назад" />
                 <Label Grid.Column="1"
-                       Text="ТРЕК"
+                       Text="Трек"
                        TextColor="White"
                        FontSize="12"
                        FontAttributes="Bold"

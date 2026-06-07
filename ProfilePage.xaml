@@ -18,15 +18,15 @@
               Padding="10,8"
               ColumnSpacing="10">
 
-            <Button Grid.Column="0"
-                    Text="←"
-                    TextColor="White"
-                    BackgroundColor="Transparent"
-                    FontSize="20"
-                    Clicked="OnBackClicked"
-                    WidthRequest="44"
-                    HeightRequest="44"
-                    ToolTipProperties.Text="Назад" />
+            <ImageButton Grid.Column="0"
+                         Source="back.png"
+                         HeightRequest="20"
+                         WidthRequest="20"
+                         BackgroundColor="Transparent"
+                         Clicked="OnBackClicked"
+                         ToolTipProperties.Text="Назад"
+                         VerticalOptions="Center"
+                         Margin="4,0" />
 
             <Label Grid.Column="1"
                    Text="Профиль"
@@ -37,10 +37,10 @@
 
             <Button x:Name="AdminButton"
                     Grid.Column="1"
-                    Text="⚙️ Админ-панель" 
+                    Text="⚙️ Админ-панель"
                     Clicked="OnAdminPanelClicked"
-                    BackgroundColor="#BB86FC" 
-                    TextColor="Black" 
+                    BackgroundColor="#BB86FC"
+                    TextColor="Black"
                     HorizontalOptions="End"
                     Margin="0,0,10,0"
                     IsVisible="False"/>
@@ -108,7 +108,7 @@
 
                 <Grid ColumnDefinitions="*, *" BackgroundColor="#FF252526" HeightRequest="50">
                     <Button Grid.Column="0"
-                            Text="ТРЕКИ"
+                            Text="ПОНРАВИВШИЕСЯ ТРЕКИ"
                             TextColor="White"
                             FontAttributes="Bold"
                             FontSize="13"
@@ -118,7 +118,7 @@
                             Command="{Binding SwitchToTracksCommand}" />
 
                     <Button Grid.Column="1"
-                            Text="АЛЬБОМЫ"
+                            Text="ПОНРАВИВШИЕСЯ АЛЬБОМЫ"
                             TextColor="White"
                             FontAttributes="Bold"
                             FontSize="13"
@@ -128,6 +128,7 @@
                             Command="{Binding SwitchToAlbumsCommand}" />
                 </Grid>
 
+                <!-- Треки -->
                 <VerticalStackLayout IsVisible="{Binding IsTracksTabVisible}" Padding="15">
                     <CollectionView ItemsSource="{Binding LikedSongs}">
                         <CollectionView.EmptyView>
@@ -141,15 +142,53 @@
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Grid ColumnDefinitions="*, Auto" Padding="10,8">
-                                    <Label Text="{Binding Title}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" LineBreakMode="NoWrap" />
-                                    <Label Grid.Column="1" Text="❤️" TextColor="#602191" FontSize="16" VerticalOptions="Center" Margin="0,0,10,0" />
+                                <Grid ColumnDefinitions="52, *" Padding="4,6" ColumnSpacing="12">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#2A2A2A" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.GoToSongCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0"
+                                            HeightRequest="52"
+                                            WidthRequest="52">
+                                        <Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding Title}"
+                                               TextColor="White"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding Author}"
+                                               TextColor="#B3B3B3"
+                                               FontSize="12"
+                                               MaxLines="1" />
+                                    </VerticalStackLayout>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
 
+                <!-- Альбомы -->
                 <VerticalStackLayout IsVisible="{Binding IsAlbumsTabVisible}" Padding="15">
                     <CollectionView ItemsSource="{Binding LikedAlbums}">
                         <CollectionView.EmptyView>
@@ -163,9 +202,46 @@
                         </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Grid ColumnDefinitions="*, Auto" Padding="10,8">
-                                    <Label Text="{Binding Title}" TextColor="White" FontSize="15" FontAttributes="Bold" VerticalOptions="Center" LineBreakMode="NoWrap" />
-                                    <Label Grid.Column="1" Text="❤️" TextColor="#602191" FontSize="16" VerticalOptions="Center" Margin="0,0,10,0" />
+                                <Grid ColumnDefinitions="52, *" Padding="4,6" ColumnSpacing="12">
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroupList>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#2A2A2A" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateGroupList>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding BindingContext.GoToAlbumCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+                                    <Border Grid.Column="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0"
+                                            HeightRequest="52"
+                                            WidthRequest="52">
+                                        <Image Source="{Binding PictureUrl}" Aspect="AspectFill" />
+                                    </Border>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding Title}"
+                                               TextColor="White"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding Author}"
+                                               TextColor="#B3B3B3"
+                                               FontSize="12"
+                                               MaxLines="1" />
+                                    </VerticalStackLayout>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>

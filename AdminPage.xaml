@@ -73,6 +73,14 @@
                             WidthRequest="80"/>
                 </HorizontalStackLayout>
 
+                <Button Text="⬇ Экспорт в TXT"
+                        Command="{Binding ExportSongsCommand}"
+                        BackgroundColor="#333"
+                        TextColor="#03DAC6"
+                        HorizontalOptions="Start"
+                        CornerRadius="8"
+                        Padding="12,8"/>
+
                 <CollectionView ItemsSource="{Binding Songs}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
