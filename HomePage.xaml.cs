@@ -54,5 +54,9 @@ namespace WaveTuneNew
             _genresScrollX += ScrollStep;
             await GenresScroll.ScrollToAsync(_genresScrollX, 0, true);
         }
+        private async void OnHelpClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new HelpPage());
+        }
     }
 }

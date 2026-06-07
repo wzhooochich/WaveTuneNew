@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WaveTuneNew.HelpPage"
+             Title="Справка"
+             BackgroundColor="#121212">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *"
+              Padding="16,12"
+              ColumnSpacing="12"
+              BackgroundColor="#121212">
+            <Button Grid.Column="0"
+                    Text="←"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    FontSize="20"
+                    Clicked="OnBackClicked"
+                    WidthRequest="44"
+                    HeightRequest="44"/>
+            <Label Grid.Column="1"
+                   Text="Справка"
+                   TextColor="White"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="24,16" Spacing="20">
+
+                <Label Text="WaveTune"
+                       TextColor="#BB86FC"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                <Label Text="Музыкальный плеер с доступом к альбомам и трекам"
+                       TextColor="#888"
+                       FontSize="13"
+                       HorizontalOptions="Center"
+                       Margin="0,-12,0,0"/>
+
+                <BoxView HeightRequest="1" BackgroundColor="#333" Margin="0,4"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="🎵  Главная страница"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="Отображает доступные альбомы и жанры. Используйте строку поиска вверху, чтобы быстро найти трек или альбом — результаты появляются по мере ввода."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#2A2A2A"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="▶  Плеер"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="Панель плеера находится внизу экрана. Доступны кнопки воспроизведения, паузы, переключения треков и регулировки громкости. Лайкнуть текущий трек можно прямо из плеера."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#2A2A2A"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="💿  Альбомы и жанры"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="Нажмите на обложку альбома, чтобы открыть его и увидеть список треков. Жанры позволяют фильтровать музыку по стилю."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#2A2A2A"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="👤  Профиль"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="В профиле хранятся понравившиеся треки и альбомы. Можно сменить аватар и никнейм."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#2A2A2A"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="🔐  Вход и регистрация"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="Логин должен содержать от 3 до 20 символов (только буквы и цифры). Пароль — не менее 6 символов."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="1" BackgroundColor="#2A2A2A"/>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="🛡  Администратор"
+                           TextColor="White"
+                           FontSize="15"
+                           FontAttributes="Bold"/>
+                    <Label Text="Администраторы могут удалять треки, назначать других администраторов и экспортировать список треков в Word-документ."
+                           TextColor="#B3B3B3"
+                           FontSize="13"/>
+                </VerticalStackLayout>
+
+                <Label Text="Версия 1.0"
+                       TextColor="#444"
+                       FontSize="11"
+                       HorizontalOptions="Center"
+                       Margin="0,16,0,0"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

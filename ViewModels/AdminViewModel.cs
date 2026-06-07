@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using OxmlWord = DocumentFormat.OpenXml.Wordprocessing;
 using MySqlConnector;
 using System.Collections.ObjectModel;
 using WaveTuneNew.Models;
@@ -7,9 +10,10 @@ using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
-    public partial class AdminViewModel : ObservableObject
+    public partial class AdminViewModel : ObservableObject 
     {
         private readonly DataBase _db = new();
+
 
         [ObservableProperty] private ObservableCollection<Song> _songs = new();
         [ObservableProperty] private ObservableCollection<User> _users = new();
@@ -20,22 +24,26 @@ namespace WaveTuneNew.ViewModels
 
         public AdminViewModel() => _ = LoadDataAsync();
 
-        private async Task LoadDataAsync()
+        private async Task LoadDataAsync() // ПОТОКИ — async/await
         {
             IsLoading = true;
-            try
+            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             {
                 _db.openConnection();
                 var conn = _db.getConnection();
 
+                // БД (взаимосвязанные таблицы) — запрос к таблице songs
+                // СОРТИРОВКА — ORDER BY title
                 using var cmdS = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs ORDER BY title", conn);
                 using var rS = await cmdS.ExecuteReaderAsync();
                 var tempSongs = new ObservableCollection<Song>();
                 while (await rS.ReadAsync())
+                    // ПЕРЕЧИСЛЕНИЯ — Song.ParseGenre возвращает Genre enum
                     tempSongs.Add(new Song { Id = rS.GetInt32("id"), Title = rS.GetString("title"), Author = rS.GetString("author"), PictureUrl = rS["picture_url"] as string ?? "damage.png", FilePath = rS["file_path"] as string ?? "", Genre = Song.ParseGenre(rS["genre"] as string), AlbumId = rS["album_id"] as int?, UserId = rS["user_id"] as int? });
                 Songs = tempSongs;
                 await rS.CloseAsync();
 
+                // БД — запрос к таблице users (разграничение прав: WHERE is_admin = 1)
                 using var cmdU = new MySqlCommand("SELECT id, login FROM users WHERE is_admin = 1 ORDER BY login", conn);
                 using var rU = await cmdU.ExecuteReaderAsync();
                 var tempUsers = new ObservableCollection<User>();
@@ -45,7 +53,7 @@ namespace WaveTuneNew.ViewModels
 
                 StatusMessage = $"Загружено: {Songs.Count} треков, {Users.Count} админов";
             }
-            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; }
+            catch (Exception ex) { StatusMessage = $"Ошибка: {ex.Message}"; } // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             finally { _db.closeConnection(); IsLoading = false; }
         }
 
@@ -53,7 +61,7 @@ namespace WaveTuneNew.ViewModels
         [RelayCommand] public async Task GoBackAsync() => await (Application.Current?.MainPage?.Navigation?.PopAsync() ?? Task.CompletedTask);
 
         [RelayCommand]
-        private async Task SearchSongsAsync()
+        private async Task SearchSongsAsync() // ПОИСК И ФИЛЬТРАЦИЯ
         {
             if (string.IsNullOrWhiteSpace(SearchSongTitle))
             {
@@ -62,9 +70,10 @@ namespace WaveTuneNew.ViewModels
             }
 
             IsLoading = true;
-            try
+            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             {
                 _db.openConnection();
+                // ПОИСК — WHERE title LIKE @title; СОРТИРОВКА — ORDER BY title
                 using var cmd = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs WHERE title LIKE @title ORDER BY title", _db.getConnection());
                 cmd.Parameters.AddWithValue("@title", "%" + SearchSongTitle + "%");
                 using var reader = await cmd.ExecuteReaderAsync();
@@ -79,12 +88,12 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteSongAsync(int id)
+        private async Task DeleteSongAsync(int id) // МЕТОДЫ КЛАССОВ
         {
             var confirm = await (Application.Current?.MainPage?.DisplayAlert("Удалить трек?", "Вы уверены?", "Да", "Нет") ?? Task.FromResult(false));
             if (!confirm) return;
 
-            try
+            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             {
                 _db.openConnection();
                 using var cmd = new MySqlCommand("DELETE FROM songs WHERE id = @id", _db.getConnection());
@@ -98,7 +107,7 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task AddAdminAsync()
+        private async Task AddAdminAsync() // РАЗГРАНИЧЕНИЕ ПРАВ ДОСТУПА
         {
             if (string.IsNullOrWhiteSpace(NewAdminLogin))
             {
@@ -106,7 +115,7 @@ namespace WaveTuneNew.ViewModels
                 return;
             }
 
-            try
+            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             {
                 _db.openConnection();
                 var conn = _db.getConnection();
@@ -117,6 +126,7 @@ namespace WaveTuneNew.ViewModels
 
                 if (!await reader.ReadAsync())
                 {
+                    // РАЗГРАНИЧЕНИЕ ПРАВ — понятное сообщение если пользователь не найден
                     StatusMessage = $"Пользователь '{NewAdminLogin}' не найден";
                     return;
                 }
@@ -124,6 +134,7 @@ namespace WaveTuneNew.ViewModels
                 var userId = reader.GetInt32("id");
                 await reader.CloseAsync();
 
+                // РАЗГРАНИЧЕНИЕ ПРАВ — назначение прав администратора через is_admin = 1
                 using var updateCmd = new MySqlCommand("UPDATE users SET is_admin = 1 WHERE id = @id", conn);
                 updateCmd.Parameters.AddWithValue("@id", userId);
                 var rows = await updateCmd.ExecuteNonQueryAsync();
@@ -144,7 +155,7 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task ExportSongsAsync()
+        private async Task ExportSongsAsync() // ЭКСПОРТ В WORD
         {
             if (Songs.Count == 0)
             {
@@ -152,35 +163,57 @@ namespace WaveTuneNew.ViewModels
                 return;
             }
 
-            try
+            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
             {
-                var sb = new System.Text.StringBuilder();
-                sb.AppendLine($"Экспорт треков WaveTune — {DateTime.Now:dd.MM.yyyy HH:mm}");
-                sb.AppendLine(new string('-', 50));
+                var fileName = $"songs_export_{DateTime.Now:yyyyMMdd_HHmm}.docx";
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
+
+                // ЭКСПОРТ В WORD — создание .docx через DocumentFormat.OpenXml
+                using var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document);
+                var mainPart = doc.AddMainDocumentPart();
+                mainPart.Document = new OxmlWord.Document(new OxmlWord.Body());
+                var body = mainPart.Document.Body!;
+
+                body.Append(new OxmlWord.Paragraph(
+                    new OxmlWord.ParagraphProperties(new OxmlWord.Justification { Val = OxmlWord.JustificationValues.Center }),
+                    new OxmlWord.Run(
+                        new OxmlWord.RunProperties(new OxmlWord.Bold(), new OxmlWord.FontSize { Val = "32" }),
+                        new OxmlWord.Text($"Треки WaveTune — {DateTime.Now:dd.MM.yyyy HH:mm}")
+                    )
+                ));
+                body.Append(new OxmlWord.Paragraph(new OxmlWord.Run(new OxmlWord.Text(""))));
 
                 int i = 1;
                 foreach (var s in Songs)
                 {
-                    sb.AppendLine($"{i++}. {s.Title} — {s.Author}");
+                    var para = new OxmlWord.Paragraph();
+                    para.Append(new OxmlWord.Run(
+                        new OxmlWord.RunProperties(new OxmlWord.Bold()),
+                        new OxmlWord.Text($"{i++}. {s.Title}") { Space = SpaceProcessingModeValues.Preserve }
+                    ));
+                    para.Append(new OxmlWord.Run(
+                        new OxmlWord.Text($" — {s.Author}") { Space = SpaceProcessingModeValues.Preserve }
+                    ));
                     if (s.Genre != null)
-                        sb.AppendLine($"   Жанр: {s.Genre}");
-                    if (s.AlbumId.HasValue)
-                        sb.AppendLine($"   Альбом ID: {s.AlbumId}");
+                        para.Append(new OxmlWord.Run(
+                            new OxmlWord.RunProperties(new OxmlWord.Color { Val = "888888" }),
+                            new OxmlWord.Text($"  [{s.Genre}]") { Space = SpaceProcessingModeValues.Preserve }
+                        ));
+                    body.Append(para);
                 }
 
-                sb.AppendLine(new string('-', 50));
-                sb.AppendLine($"Всего треков: {Songs.Count}");
+                body.Append(new OxmlWord.Paragraph(new OxmlWord.Run(new OxmlWord.Text(""))));
+                body.Append(new OxmlWord.Paragraph(
+                    new OxmlWord.Run(
+                        new OxmlWord.RunProperties(new OxmlWord.Italic()),
+                        new OxmlWord.Text($"Всего треков: {Songs.Count}")
+                    )
+                ));
 
-                var fileName = $"songs_export_{DateTime.Now:yyyyMMdd_HHmm}.txt";
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
-                await File.WriteAllTextAsync(path, sb.ToString(), System.Text.Encoding.UTF8);
+                mainPart.Document.Save();
 
                 StatusMessage = $"Экспорт сохранён: {fileName}";
-
-                await (Application.Current?.MainPage?.DisplayAlert(
-                    "Готово",
-                    $"Файл сохранён:\n{path}",
-                    "OK") ?? Task.CompletedTask);
+                await (Application.Current?.MainPage?.DisplayAlert("Готово", $"Файл сохранён:\n{path}", "OK") ?? Task.CompletedTask);
             }
             catch (Exception ex) { StatusMessage = $"Ошибка экспорта: {ex.Message}"; }
         }

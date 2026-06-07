@@ -8,7 +8,6 @@
              Title="Home">
     <Grid RowDefinitions="64, *, Auto">
 
-        <!-- Шапка -->
         <Grid Grid.Row="0"
               BackgroundColor="#121212"
               ColumnDefinitions="Auto, *, Auto, Auto"
@@ -73,7 +72,6 @@
             </Border>
         </Grid>
 
-        <!-- Контент -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="0" Padding="20,16,20,24">
 
@@ -258,20 +256,29 @@
                     </CollectionView>
                 </ScrollView>
 
-                <Label Text="О приложении"
-                       TextColor="#535353"
-                       FontSize="11"
-                       HorizontalOptions="Center"
-                       Margin="0,24,0,0">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnAboutClicked" />
-                    </Label.GestureRecognizers>
-                </Label>
+                <HorizontalStackLayout HorizontalOptions="Center"
+                                       Margin="0,24,0,0"
+                                       Spacing="16">
+                    <Label Text="О приложении"
+                           TextColor="#535353"
+                           FontSize="11">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAboutClicked" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="·" TextColor="#535353" FontSize="11" VerticalOptions="Center"/>
+                    <Label Text="Справка"
+                           TextColor="#535353"
+                           FontSize="11">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHelpClicked" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Подсказки поиска -->
         <Border Grid.Row="1"
                 x:Name="SuggestionsPanel"
                 BackgroundColor="#282828"

@@ -47,33 +47,33 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Padding="20" Spacing="16">
 
-                <Label Text="{Binding StatusMessage}" 
-                       TextColor="#03DAC6" 
+                <Label Text="{Binding StatusMessage}"
+                       TextColor="#03DAC6"
                        HorizontalOptions="Center"
                        FontSize="13"/>
 
                 <BoxView HeightRequest="1" BackgroundColor="#333" Margin="0,8" />
 
-                <Label Text="Управление треками" 
-                       FontSize="16" 
-                       FontAttributes="Bold" 
+                <Label Text="Управление треками"
+                       FontSize="16"
+                       FontAttributes="Bold"
                        TextColor="White"/>
 
                 <HorizontalStackLayout Spacing="8">
-                    <Entry Text="{Binding SearchSongTitle}" 
-                           Placeholder="Поиск по названию" 
-                           WidthRequest="220" 
-                           TextColor="White" 
-                           PlaceholderColor="#666" 
+                    <Entry Text="{Binding SearchSongTitle}"
+                           Placeholder="Поиск по названию"
+                           WidthRequest="220"
+                           TextColor="White"
+                           PlaceholderColor="#666"
                            BackgroundColor="#1E1E1E"/>
-                    <Button Text="Поиск" 
-                            Command="{Binding SearchSongsCommand}" 
-                            BackgroundColor="#BB86FC" 
+                    <Button Text="Поиск"
+                            Command="{Binding SearchSongsCommand}"
+                            BackgroundColor="#BB86FC"
                             TextColor="Black"
                             WidthRequest="80"/>
                 </HorizontalStackLayout>
 
-                <Button Text="⬇ Экспорт в TXT"
+                <Button Text="⬇ Экспорт в Word"
                         Command="{Binding ExportSongsCommand}"
                         BackgroundColor="#333"
                         TextColor="#03DAC6"
@@ -84,24 +84,24 @@
                 <CollectionView ItemsSource="{Binding Songs}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid ColumnDefinitions="*,Auto" 
-                                  Padding="12,8" 
+                            <Grid ColumnDefinitions="*,Auto"
+                                  Padding="12,8"
                                   BackgroundColor="#1E1E1E"
                                   Margin="0,2">
                                 <VerticalStackLayout VerticalOptions="Center">
-                                    <Label Text="{Binding Title}" 
-                                           TextColor="White" 
+                                    <Label Text="{Binding Title}"
+                                           TextColor="White"
                                            FontAttributes="Bold"
                                            FontSize="14"/>
-                                    <Label Text="{Binding Author}" 
-                                           TextColor="#888" 
+                                    <Label Text="{Binding Author}"
+                                           TextColor="#888"
                                            FontSize="12"/>
                                 </VerticalStackLayout>
                                 <Button Grid.Column="1"
                                         Text="Удалить"
                                         BackgroundColor="#CF6679"
                                         TextColor="Black"
-                                        WidthRequest="80"
+                                        WidthRequest="90"
                                         HeightRequest="36"
                                         VerticalOptions="Center"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AdminViewModel}}, Path=DeleteSongCommand}"
@@ -113,37 +113,37 @@
 
                 <BoxView HeightRequest="1" BackgroundColor="#333" Margin="0,16,0,8" />
 
-                <Label Text="Добавить администратора" 
-                       FontSize="16" 
-                       FontAttributes="Bold" 
+                <Label Text="Добавить администратора"
+                       FontSize="16"
+                       FontAttributes="Bold"
                        TextColor="White"/>
 
                 <HorizontalStackLayout Spacing="8">
-                    <Entry Text="{Binding NewAdminLogin}" 
-                           Placeholder="Логин пользователя" 
-                           WidthRequest="220" 
-                           TextColor="White" 
-                           PlaceholderColor="#666" 
+                    <Entry Text="{Binding NewAdminLogin}"
+                           Placeholder="Логин пользователя"
+                           WidthRequest="220"
+                           TextColor="White"
+                           PlaceholderColor="#666"
                            BackgroundColor="#1E1E1E"/>
-                    <Button Text="Добавить" 
-                            Command="{Binding AddAdminCommand}" 
-                            BackgroundColor="#BB86FC" 
+                    <Button Text="Добавить"
+                            Command="{Binding AddAdminCommand}"
+                            BackgroundColor="#BB86FC"
                             TextColor="Black"
                             WidthRequest="100"/>
                 </HorizontalStackLayout>
 
-                <Label Text="Текущие администраторы:" 
-                       FontSize="13" 
-                       TextColor="#888" 
+                <Label Text="Текущие администраторы:"
+                       FontSize="13"
+                       TextColor="#888"
                        Margin="0,8,0,4"/>
 
                 <CollectionView ItemsSource="{Binding Users}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Padding="12,6" 
+                            <Grid Padding="12,6"
                                   BackgroundColor="#1E1E1E"
                                   Margin="0,2">
-                                <Label Text="{Binding Login}" 
+                                <Label Text="{Binding Login}"
                                        TextColor="White"
                                        FontSize="14"/>
                             </Grid>

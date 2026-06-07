@@ -7,26 +7,22 @@ using WaveTuneNew.Services;
 
 namespace WaveTuneNew.ViewModels
 {
-    public partial class RegisterViewModel : ObservableObject
+    public partial class RegisterViewModel : ObservableObject 
     {
-        [ObservableProperty]
-        private string login = string.Empty;
-
-        [ObservableProperty]
-        private string password = string.Empty;
-
-        [ObservableProperty]
-        private string errorMessage = string.Empty;
+        // GET/SET — [ObservableProperty] генерирует свойства Login, Password, ErrorMessage
+        [ObservableProperty] private string login = string.Empty;
+        [ObservableProperty] private string password = string.Empty;
+        [ObservableProperty] private string errorMessage = string.Empty;
 
         [RelayCommand]
-        private void FocusPassword(object parameter)
+        private void FocusPassword(object parameter) // МЕТОДЫ КЛАССОВ
         {
             if (parameter is Entry entry)
                 entry.Focus();
         }
 
         [RelayCommand]
-        private void ClearForm()
+        private void ClearForm() // МЕТОДЫ КЛАССОВ
         {
             Login = string.Empty;
             Password = string.Empty;
@@ -34,16 +30,18 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task RegisterAsync()
+        private async Task RegisterAsync() // ПОТОКИ — async/await; МЕТОДЫ КЛАССОВ
         {
             ErrorMessage = string.Empty;
 
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password))
             {
+                // РАЗГРАНИЧЕНИЕ ПРАВ — понятное сообщение об ошибке пользователю
                 ErrorMessage = "Enter login and password";
                 return;
             }
 
+            // РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ — валидация логина: только буквы и цифры, от 3 до 20 символов
             if (!Regex.IsMatch(Login, @"^[a-zA-Z0-9]{3,20}$"))
             {
                 ErrorMessage = "Login must be 3–20 characters, letters and digits only";
@@ -57,12 +55,13 @@ namespace WaveTuneNew.ViewModels
             }
 
             var db = new DataBase();
+            // БД — три запроса к таблице users
             const string checkQuery = "SELECT COUNT(*) FROM users WHERE login = @login";
             const string insertQuery = "INSERT INTO users (login, password) VALUES (@login, @password)";
             const string getIdQuery = "SELECT id FROM users WHERE login = @login";
 
             using var connection = db.getConnection();
-            await connection.OpenAsync();
+            await connection.OpenAsync(); // ПОТОКИ — async открытие соединения
 
             using (var checkCmd = new MySqlCommand(checkQuery, connection))
             {
@@ -70,6 +69,7 @@ namespace WaveTuneNew.ViewModels
                 var count = (long)(await checkCmd.ExecuteScalarAsync())!;
                 if (count > 0)
                 {
+                    // РАЗГРАНИЧЕНИЕ ПРАВ — запрет регистрации с занятым логином
                     ErrorMessage = "This login is already taken";
                     return;
                 }
