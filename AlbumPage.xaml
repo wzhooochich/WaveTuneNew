@@ -27,11 +27,21 @@
                        VerticalOptions="Center"
                        CharacterSpacing="2"/>
                 <ImageButton Grid.Column="2"
-                             Source="heart.png"
+                             Command="{Binding ToggleLikeAlbumCommand}"
+                             Source="heart_empty.png"
                              HeightRequest="22"
                              HorizontalOptions="End"
                              BackgroundColor="Transparent"
-                             ToolTipProperties.Text="Нравится" />
+                             ToolTipProperties.Text="Нравится">
+                    <ImageButton.Triggers>
+                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsAlbumLiked}" Value="True">
+                            <Setter Property="Source" Value="heart_filled.png" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsAlbumLiked}" Value="False">
+                            <Setter Property="Source" Value="heart_empty.png" />
+                        </DataTrigger>
+                    </ImageButton.Triggers>
+                </ImageButton>
             </Grid>
         </Border>
 
@@ -47,7 +57,6 @@
                     </Border.Shadow>
                     <Image Source="{Binding CurrentAlbum.PictureUrl}" Aspect="AspectFill" />
                 </Border>
-
                 <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
                     <Label Text="{Binding CurrentAlbum.Title}"
                            TextColor="White"
@@ -78,14 +87,10 @@
                                     PointerExitedCommandParameter="{Binding}" />
                             </Grid.GestureRecognizers>
                             <Grid.Triggers>
-                                <DataTrigger TargetType="Grid"
-                                             Binding="{Binding IsHovered}"
-                                             Value="True">
+                                <DataTrigger TargetType="Grid" Binding="{Binding IsHovered}" Value="True">
                                     <Setter Property="BackgroundColor" Value="#1E1E1E" />
                                 </DataTrigger>
-                                <DataTrigger TargetType="Grid"
-                                             Binding="{Binding IsHovered}"
-                                             Value="False">
+                                <DataTrigger TargetType="Grid" Binding="{Binding IsHovered}" Value="False">
                                     <Setter Property="BackgroundColor" Value="Transparent" />
                                 </DataTrigger>
                             </Grid.Triggers>

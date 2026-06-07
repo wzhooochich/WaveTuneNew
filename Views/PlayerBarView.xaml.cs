@@ -1,5 +1,3 @@
-using WaveTuneNew.Services;
-
 namespace WaveTuneNew.Views
 {
     public partial class PlayerBarView : ContentView
@@ -7,7 +5,7 @@ namespace WaveTuneNew.Views
         public PlayerBarView()
         {
             InitializeComponent();
-            BindingContext = IPlatformApplication.Current?.Services.GetService<PlayerService>();
+            BindingContext = App.Current?.Handler?.MauiContext?.Services.GetService<Services.PlayerService>();
         }
     }
 }

@@ -18,6 +18,9 @@ namespace WaveTuneNew.ViewModels
         [ObservableProperty]
         private Album _currentAlbum = new();
 
+        [ObservableProperty]
+        private bool isAlbumLiked;
+
         public AlbumViewModel(int albumId, PlayerService player)
         {
             _albumId = albumId;
@@ -49,6 +52,8 @@ namespace WaveTuneNew.ViewModels
                 }
                 await albumReader.CloseAsync();
 
+                await CheckIfAlbumLikedAsync(connection);
+
                 const string songsQuery = "SELECT id, title, author, picture_url, file_path, genre FROM songs WHERE album_id = @albumId";
                 using var songsCmd = new MySqlCommand(songsQuery, connection);
                 songsCmd.Parameters.AddWithValue("@albumId", _albumId);
@@ -68,6 +73,57 @@ namespace WaveTuneNew.ViewModels
                     });
                 }
                 Items = tempSongs;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private async Task CheckIfAlbumLikedAsync(MySqlConnection connection)
+        {
+            var user = SessionService.CurrentUser;
+            if (user == null) return;
+
+            const string query = "SELECT COUNT(*) FROM user_liked_albums WHERE user_id = @userId AND album_id = @albumId";
+            using var cmd = new MySqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@userId", user.Id);
+            cmd.Parameters.AddWithValue("@albumId", _albumId);
+
+            var count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            IsAlbumLiked = count > 0;
+        }
+
+        [RelayCommand]
+        private async Task ToggleLikeAlbumAsync()
+        {
+            var user = SessionService.CurrentUser;
+            if (user == null) return;
+
+            try
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+
+                if (IsAlbumLiked)
+                {
+                    const string deleteQuery = "DELETE FROM user_liked_albums WHERE user_id = @userId AND album_id = @albumId";
+                    using var cmd = new MySqlCommand(deleteQuery, connection);
+                    cmd.Parameters.AddWithValue("@userId", user.Id);
+                    cmd.Parameters.AddWithValue("@albumId", _albumId);
+                    await cmd.ExecuteNonQueryAsync();
+                    IsAlbumLiked = false;
+                }
+                else
+                {
+                    const string insertQuery = "INSERT INTO user_liked_albums (user_id, album_id, liked_at) VALUES (@userId, @albumId, NOW())";
+                    using var cmd = new MySqlCommand(insertQuery, connection);
+                    cmd.Parameters.AddWithValue("@userId", user.Id);
+                    cmd.Parameters.AddWithValue("@albumId", _albumId);
+                    await cmd.ExecuteNonQueryAsync();
+                    IsAlbumLiked = true;
+                }
             }
             catch (Exception ex)
             {

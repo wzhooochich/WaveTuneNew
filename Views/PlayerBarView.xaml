@@ -32,6 +32,24 @@
                            FontSize="11"
                            MaxLines="1" />
                 </VerticalStackLayout>
+
+                <ImageButton Command="{Binding ToggleLikeCurrentSongCommand}"
+                             Source="heart_empty.png"
+                             HeightRequest="22"
+                             WidthRequest="22"
+                             VerticalOptions="Center"
+                             Margin="10,0,0,0"
+                             BackgroundColor="Transparent"
+                             ToolTipProperties.Text="Нравится">
+                    <ImageButton.Triggers>
+                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsCurrentSongLiked}" Value="True">
+                            <Setter Property="Source" Value="heart_filled.png" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="ImageButton" Binding="{Binding IsCurrentSongLiked}" Value="False">
+                            <Setter Property="Source" Value="heart_empty.png" />
+                        </DataTrigger>
+                    </ImageButton.Triggers>
+                </ImageButton>
             </HorizontalStackLayout>
 
             <VerticalStackLayout Grid.Column="1"
@@ -64,14 +82,10 @@
                                      Padding="0"
                                      ToolTipProperties.Text="Играть / Пауза">
                             <ImageButton.Triggers>
-                                <DataTrigger TargetType="ImageButton"
-                                             Binding="{Binding IsPlaying}"
-                                             Value="True">
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsPlaying}" Value="True">
                                     <Setter Property="Source" Value="stop.png" />
                                 </DataTrigger>
-                                <DataTrigger TargetType="ImageButton"
-                                             Binding="{Binding IsPlaying}"
-                                             Value="False">
+                                <DataTrigger TargetType="ImageButton" Binding="{Binding IsPlaying}" Value="False">
                                     <Setter Property="Source" Value="play.png" />
                                 </DataTrigger>
                             </ImageButton.Triggers>

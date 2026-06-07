@@ -2,6 +2,7 @@ using Plugin.Maui.Audio;
 using WaveTuneNew.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MySqlConnector;
 
 namespace WaveTuneNew.Services
 {
@@ -28,6 +29,9 @@ namespace WaveTuneNew.Services
 
         [ObservableProperty]
         private bool isVolumeVisible = false;
+
+        [ObservableProperty]
+        private bool isCurrentSongLiked;
 
         private List<Song> _queue = new();
         private int _currentIndex = -1;
@@ -74,10 +78,13 @@ namespace WaveTuneNew.Services
                     _player.PlaybackEnded -= OnPlaybackEnded;
                     _player.Stop();
                     _player.Dispose();
+                    _player = null;
                 }
 
                 CurrentSong = song;
                 HasCurrentSong = true;
+
+                _ = Task.Run(() => CheckIfSongLikedAsync(song.Id));
 
                 var stream = File.OpenRead(song.FilePath);
                 _player = _audioManager.CreatePlayer(stream);
@@ -93,6 +100,72 @@ namespace WaveTuneNew.Services
             {
                 System.Diagnostics.Debug.WriteLine($"ОШИБКА ПЛЕЕРА: {ex.Message}");
                 IsPlaying = false;
+            }
+        }
+
+        private async Task CheckIfSongLikedAsync(int songId)
+        {
+            var user = SessionService.CurrentUser;
+            if (user == null)
+            {
+                MainThread.BeginInvokeOnMainThread(() => IsCurrentSongLiked = false);
+                return;
+            }
+
+            try
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+
+                const string query = "SELECT COUNT(*) FROM user_liked_songs WHERE user_id = @userId AND song_id = @songId";
+                using var cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@userId", user.Id);
+                cmd.Parameters.AddWithValue("@songId", songId);
+
+                var count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                MainThread.BeginInvokeOnMainThread(() => IsCurrentSongLiked = count > 0);
+            }
+            catch
+            {
+                MainThread.BeginInvokeOnMainThread(() => IsCurrentSongLiked = false);
+            }
+        }
+
+        [RelayCommand]
+        public async Task ToggleLikeCurrentSong()
+        {
+            var user = SessionService.CurrentUser;
+            if (user == null || CurrentSong == null) return;
+
+            try
+            {
+                var db = new DataBase();
+                using var connection = db.getConnection();
+                await connection.OpenAsync();
+
+                if (IsCurrentSongLiked)
+                {
+                    const string deleteQuery = "DELETE FROM user_liked_songs WHERE user_id = @userId AND song_id = @songId";
+                    using var cmd = new MySqlCommand(deleteQuery, connection);
+                    cmd.Parameters.AddWithValue("@userId", user.Id);
+                    cmd.Parameters.AddWithValue("@songId", CurrentSong.Id);
+                    await cmd.ExecuteNonQueryAsync();
+                    IsCurrentSongLiked = false;
+                }
+                else
+                {
+                    const string insertQuery = "INSERT INTO user_liked_songs (user_id, song_id, liked_at) VALUES (@userId, @songId, NOW())";
+                    using var cmd = new MySqlCommand(insertQuery, connection);
+                    cmd.Parameters.AddWithValue("@userId", user.Id);
+                    cmd.Parameters.AddWithValue("@songId", CurrentSong.Id);
+                    await cmd.ExecuteNonQueryAsync();
+                    IsCurrentSongLiked = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 
