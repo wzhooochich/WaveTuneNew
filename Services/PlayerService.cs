@@ -8,7 +8,7 @@ namespace WaveTuneNew.Services
 {
     public partial class PlayerService : ObservableObject 
     {
-        // ИНТЕРФЕЙСЫ (встроенные)
+
         private readonly IAudioManager _audioManager;
         private IAudioPlayer? _player;
         private readonly IDispatcherTimer _timer;
@@ -31,7 +31,7 @@ namespace WaveTuneNew.Services
 
             _timer = Application.Current!.Dispatcher.CreateTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(200);
-            //обработчик события Tick таймера
+
             _timer.Tick += (s, e) =>
             {
                 if (_player is { IsPlaying: true } && _player.Duration > 0)
@@ -39,7 +39,7 @@ namespace WaveTuneNew.Services
             };
         }
 
-        public void SetQueue(IEnumerable<Song> songs, int startIndex = 0) // ИНТЕРФЕЙСЫ 
+        public void SetQueue(IEnumerable<Song> songs, int startIndex = 0) 
         {
             _queue = songs.ToList();
             _currentIndex = startIndex;
@@ -64,7 +64,7 @@ namespace WaveTuneNew.Services
 
                 if (_player != null)
                 {
-                    // ДЕЛЕГАТЫ/СОБЫТИЯ — отписка от события перед уничтожением плеера
+
                     _player.PlaybackEnded -= OnPlaybackEnded;
                     _player.Stop();
                     _player.Dispose();
@@ -74,14 +74,12 @@ namespace WaveTuneNew.Services
                 CurrentSong = song;
                 HasCurrentSong = true;
 
-                // ПОТОКИ — Task.Run запускает задачу в фоновом потоке
                 _ = Task.Run(() => CheckIfSongLikedAsync(song.Id));
 
                 var stream = File.OpenRead(song.FilePath);
-                // ИНТЕРФЕЙСЫ — IAudioManager создаёт IAudioPlayer
                 _player = _audioManager.CreatePlayer(stream);
                 _player.Volume = Volume;
-                // ДЕЛЕГАТЫ/СОБЫТИЯ — подписка на событие окончания воспроизведения
+
                 _player.PlaybackEnded += OnPlaybackEnded;
 
                 PlayProgress = 0;
@@ -96,12 +94,11 @@ namespace WaveTuneNew.Services
             }
         }
 
-        private async Task CheckIfSongLikedAsync(int songId) // ПОТОКИ — async Task
+        private async Task CheckIfSongLikedAsync(int songId) 
         {
             var user = SessionService.CurrentUser;
             if (user == null)
             {
-                // ПОТОКИ — возврат результата на UI-поток из фонового
                 MainThread.BeginInvokeOnMainThread(() => IsCurrentSongLiked = false);
                 return;
             }
@@ -208,10 +205,9 @@ namespace WaveTuneNew.Services
                 _player.Volume = value;
         }
 
-        // ДЕЛЕГАТЫ/СОБЫТИЯ — обработчик события PlaybackEnded, вызывает PlayNext 
         private void OnPlaybackEnded(object? sender, EventArgs e)
         {
-            MainThread.BeginInvokeOnMainThread(PlayNext); // ПОТОКИ — передача метода как делегата
+            MainThread.BeginInvokeOnMainThread(PlayNext);  
         }
     }
 }

@@ -9,7 +9,7 @@ namespace WaveTuneNew.ViewModels
 {
     public partial class RegisterViewModel : ObservableObject 
     {
-        // GET/SET — [ObservableProperty] генерирует свойства Login, Password, ErrorMessage
+
         [ObservableProperty] private string login = string.Empty;
         [ObservableProperty] private string password = string.Empty;
         [ObservableProperty] private string errorMessage = string.Empty;
@@ -40,7 +40,6 @@ namespace WaveTuneNew.ViewModels
                 return;
             }
 
-            // РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ — валидация логина: только буквы и цифры, от 3 до 20 символов
             if (!Regex.IsMatch(Login, @"^[a-zA-Z0-9]{3,20}$"))
             {
                 ErrorMessage = "Login must be 3–20 characters, letters and digits only";

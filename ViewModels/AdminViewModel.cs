@@ -24,16 +24,14 @@ namespace WaveTuneNew.ViewModels
 
         public AdminViewModel() => _ = LoadDataAsync();
 
-        private async Task LoadDataAsync() // ПОТОКИ — async/await
+        private async Task LoadDataAsync() 
         {
             IsLoading = true;
-            try // ОБРАБОТКА ИСКЛЮЧЕНИЙ
+            try 
             {
                 _db.openConnection();
                 var conn = _db.getConnection();
 
-                // БД (взаимосвязанные таблицы) — запрос к таблице songs
-                // СОРТИРОВКА — ORDER BY title
                 using var cmdS = new MySqlCommand("SELECT id, title, author, picture_url, file_path, genre, album_id, user_id FROM songs ORDER BY title", conn);
                 using var rS = await cmdS.ExecuteReaderAsync();
                 var tempSongs = new ObservableCollection<Song>();
@@ -42,7 +40,6 @@ namespace WaveTuneNew.ViewModels
                 Songs = tempSongs;
                 await rS.CloseAsync();
 
-                // БД — запрос к таблице users (разграничение прав: WHERE is_admin = 1)
                 using var cmdU = new MySqlCommand("SELECT id, login FROM users WHERE is_admin = 1 ORDER BY login", conn);
                 using var rU = await cmdU.ExecuteReaderAsync();
                 var tempUsers = new ObservableCollection<User>();
@@ -153,7 +150,7 @@ namespace WaveTuneNew.ViewModels
         }
 
         [RelayCommand]
-        private async Task ExportSongsAsync() // ЭКСПОРТ В WORD
+        private async Task ExportSongsAsync() 
         {
             if (Songs.Count == 0)
             {
@@ -166,7 +163,6 @@ namespace WaveTuneNew.ViewModels
                 var fileName = $"songs_export_{DateTime.Now:yyyyMMdd_HHmm}.docx";
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
 
-                // ЭКСПОРТ В WORD — DocumentFormat.OpenXml
                 using var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document);
                 var mainPart = doc.AddMainDocumentPart();
                 mainPart.Document = new OxmlWord.Document(new OxmlWord.Body());
